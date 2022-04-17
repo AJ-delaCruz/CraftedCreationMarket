@@ -49,85 +49,131 @@ const upload = multer({
     storage: storage
 })
 
-//Route to handle Post Request Call
+
+//connect to mongoDB
+//const { mongoDB } = require('./config'); //dotenv.config();
+const mongoose = require('mongoose');
+const dotenv = require("dotenv")
+dotenv.config();
+const Users = require('./Models/UserModel');
+
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    poolSize: 500,
+    bufferMaxEntries: 0
+};
+
+// mongoose.connect(mongoDB, options, (err, res) => {
+//     if (err) {
+//         console.log(err);
+//         console.log(`MongoDB Connection Failed`);
+//     } else {
+//         console.log(`MongoDB Connected`);
+//     }
+// });
+
+mongoose.connect(process.env.MONGO_URL ,(err, res) => { //mongoose.connect(mongoDB )
+    if (err) {
+        console.log(err);
+        console.log(`MongoDB Connection Failed`);
+    } else {
+        console.log(`MongoDB Connected`);
+    }
+});
+
+
+
+
+
+app.post('/signup', async (req, res) => {
+    console.log("Inside SiGN UP POST");
+
+    const newUser = new Users({
+        username: req.body.email,
+        password: req.body.password,
+
+    });
+
+    console.log(req.body.email);
+    console.log(req.body.password);
+
+    Users.findOne({ username: req.body.email }, (error, userTaken) => {
+        if (error) {
+            console.log(err);
+            console.log("ERROR SIGNING UP");
+            res.writeHead(500, {
+                'Content-Type': 'text/plain'
+            })
+            res.end();
+        }
+        if (userTaken) {
+            res.writeHead(400, {
+                'Content-Type': 'text/plain'
+            })
+            res.end("Username already exists");
+        }
+        else {
+            newUser.save((error, data) => {
+                if (error) {
+                    res.writeHead(500, {
+                        'Content-Type': 'text/plain'
+                    })
+                    res.end();
+                }
+                else {
+                    console.log("sign up works");
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain'
+                    })
+                    res.end();
+                }
+            });
+        }
+    });
+
+
+});
+
+
+//login
 app.post('/login', async (req, res) => {
+
+    console.log("INSIDE LOGIN");
     const usernameValue = req.body.username;
     const passwordValue = req.body.password;
     console.log(usernameValue);
     console.log(passwordValue);
 
-
-    // db.query("SELECT * FROM users WHERE username = " +
-    //     mysql.escape(req.body.username) + " and password = " + mysql.escape(req.body.password),
-    await db.query("SELECT * FROM users WHERE username = ? AND password = ?", [usernameValue, passwordValue], function (err, result) {
-        if (err) {
-            console.log(err);
-            console.log("LOGIN NOT WORKING")
-        }
-
-        if (result.length > 0) {
-            res.cookie('cookie', "admin", {maxAge: 900000, httpOnly: false, path: '/'});
-            req.session.user = result;
-            //
-            // req.session.seller = "seller is here";
-            // console.log(req.session.seller );
-            // console.log(req.session.user);
-
-
-            res.send(result);
-            console.log("LOGIN WORKING")
-
-            req.session.username = req.body.username;
-            // console.log(req.session.username)
-
-            // req.session.hasShop = req.session.user[0].shopName;
-            // console.log(req.session.user[0].shopName);
-            // console.log(req.session.hasShop)
-            // console.log(req.cookies.name);
-        } else { //no username or password found
-            res.writeHead(400, {
+    Users.findOne({ username: req.body.username, password: req.body.password }, (error, user) => {
+        if (error) {
+            console.log("LOGIN NOT WORKING");
+            res.writeHead(500, {
                 'Content-Type': 'text/plain'
             })
-            res.end("Invalid credentials");
-            console.log("login failed")
+            res.end("Error Occured");
         }
-    });
-
-
-});
-app.post('/signup', async (req, res) => {
-    console.log("Inside SiGN UP POST");
-
-    // console.log(Users);
-    // console.log(Users.map(x => x.username));
-    // console.log(req.body.password);
-    const name = req.body.name;
-    const username = req.body.username
-    const password = req.body.password;
-    console.log(req.body.name);
-    console.log(req.body.username);
-    console.log(req.body.password);
-
-
-    await db.query("INSERT INTO users (name, username, password) VALUES (?,?, ?)", [name, username, password], function (err, result) {
-        if (err) {
-            console.log(err);
-            console.log("ERROR SIGNING UP");
-            res.writeHead(400, {
-                'Content-Type': 'text/plain'
-            })
-            res.end("Error while signing up");
-        } else {
-            console.log("sign up works");
+        if (user) {
+            console.log("LOGIN WORKING");
+            res.cookie('cookie', user.username, { maxAge: 900000, httpOnly: false, path: '/' });
+            req.session.user = user;
             res.writeHead(200, {
                 'Content-Type': 'text/plain'
             })
-            res.end("Successful Sign up");
+            res.end();
+        }
+        else {
+            res.writeHead(401, {
+                'Content-Type': 'text/plain'
+            })
+            res.end("Invalid Credentials");
+            console.log("login failed");
         }
     });
 
 
 });
+
 
 //route to root
 app.get('/', function (req, res) {

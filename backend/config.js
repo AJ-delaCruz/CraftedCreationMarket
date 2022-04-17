@@ -1,15 +1,7 @@
-const mysql = require('mysql');
+const config = {
+    // mongoDB: 'mongodb+srv://admin:<password>@<cluster_id>.mongodb.net/<collection>?retryWrites=true&w=majority'
+    mongoDB: 'mongodb+srv://admin:etsypassword@etsy.ybkwj.mongodb.net/Etsy?retryWrites=true&w=majority'
+};
 
-const db = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'password',
-        // port: '',
-        database: 'EtsyDatabase',
-    });
 
-db.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected");
-});
-module.exports = db;
+module.exports = config;

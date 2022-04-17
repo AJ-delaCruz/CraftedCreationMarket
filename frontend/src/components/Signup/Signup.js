@@ -16,7 +16,7 @@ class Signup extends Component {
             state: "",
             country: "",
             zipcode: "",
-            email: "",
+            username: "",
             phoneNum: "",
             password: "",
             authFlag: false,
@@ -25,15 +25,15 @@ class Signup extends Component {
 
         this.submitSignup = this.submitSignup.bind(this);
         this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
-        this.emailChangeHandler = this.emailChangeHandler.bind(this);
+        this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
 
     }
 
 
-    //email change handler
-    emailChangeHandler = (e) => {
+    //username change handler
+    usernameChangeHandler = (e) => {
         this.setState({
-            email: e.target.value
+            username: e.target.value
         })
     }
 
@@ -56,7 +56,7 @@ class Signup extends Component {
             // state: this.state.state,
             // country: this.state.country,
             // zipcode: this.state.zipcode,
-            email: this.state.email,
+            username: this.state.username,
             // phoneNum: this.state.phoneNum,
             password: this.state.password
         }
@@ -164,11 +164,11 @@ class Signup extends Component {
                             {/*</div>*/}
                             <div className="form-group">
                                 <input
-                                    onChange={this.emailChangeHandler}
+                                    onChange={this.usernameChangeHandler}
                                     type="text"
                                     className="form-control"
-                                    name="email"
-                                    placeholder="Email"
+                                    name="username"
+                                    placeholder="username"
                                 />
                             </div>
                             {/*<div className="form-group">*/}
