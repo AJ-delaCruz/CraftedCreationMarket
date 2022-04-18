@@ -2,9 +2,9 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { secret } = require('../Utils/config');
+const {secret} = require('../Utils/config');
 const User = require('../Models/UserModel');
-const { auth } = require("../utils/passport");
+const {auth} = require("../utils/passport");
 auth();
 
 //signup
@@ -12,15 +12,15 @@ router.post('/signup', async (req, res) => {
     console.log("Inside SiGN UP POST");
 
     const newUser = new User({
-        username: req.body.email,
+        username: req.body.username,
         password: req.body.password,
 
     });
 
-    console.log(req.body.email);
+    console.log(req.body.username);
     console.log(req.body.password);
 
-    User.findOne({ username: req.body.email }, (err, userTaken) => {
+    User.findOne({username: req.body.username}, (err, userTaken) => {
         if (err) {
             console.log(err);
             console.log("ERROR SIGNING UP");
@@ -34,21 +34,19 @@ router.post('/signup', async (req, res) => {
                 'Content-Type': 'text/plain'
             })
             res.end("Username already exists");
-        }
-        else {
+        } else {
             newUser.save((error, data) => {
                 if (error) {
                     res.writeHead(500, {
                         'Content-Type': 'text/plain'
                     })
                     res.end();
-                }
-                else {
+                } else {
                     console.log("sign up works");
                     res.writeHead(200, {
                         'Content-Type': 'text/plain'
                     })
-                    res.end();
+                    res.end(data);
                 }
             });
         }
@@ -67,7 +65,7 @@ router.post('/login', async (req, res) => {
     console.log(usernameValue);
     console.log(passwordValue);
 
-    User.findOne({ username: req.body.username, password: req.body.password }, (error, user) => {
+    User.findOne({username: req.body.username, password: req.body.password}, (error, user) => {
         if (error) {
             console.log("LOGIN NOT WORKING");
             res.writeHead(500, {
@@ -82,7 +80,7 @@ router.post('/login', async (req, res) => {
 
 
             //jwt
-            const payload = { _id: user._id, username: user.username};
+            const payload = {_id: user._id, username: user.username};
             const token = jwt.sign(payload, secret, {
                 expiresIn: 1008000
             });
@@ -90,8 +88,7 @@ router.post('/login', async (req, res) => {
                 'Content-Type': 'text/plain'
             })
             res.status(200).end("JWT " + token);
-        }
-        else {
+        } else {
             res.writeHead(401, {
                 'Content-Type': 'text/plain'
             })
@@ -105,28 +102,28 @@ router.post('/login', async (req, res) => {
 
 
 //update profile
-router.put("/:id",  async (req, res) => {
+router.put("/update/:id", async (req, res) => {
 
-        // await User.findByIdAndUpdate( req.params.id, { $set: req.body, }, { new: true },
-        //     (err, result) =>
-        //     {
-        //         if (err) {
-        //             console.log(err);
-        //             console.log("ERROR UPDATING PROFILE");
-        //             res.writeHead(400, {
-        //                 'Content-Type': 'text/plain'
-        //             })
-        //             res.end("ERROR UPDATING PROFILE");
-        //         } else {
-        //             // res.send(result);
-        //             console.log("profile update works");
-        //
-        //             res.status(200).json(result);
-        //             res.end("Successful PROFILE UPDATE");
-        //         }
-        //
-        //
-        //     });
+    // await User.findByIdAndUpdate( req.params.id, { $set: req.body, }, { new: true },
+    //     (err, result) =>
+    //     {
+    //         if (err) {
+    //             console.log(err);
+    //             console.log("ERROR UPDATING PROFILE");
+    //             res.writeHead(400, {
+    //                 'Content-Type': 'text/plain'
+    //             })
+    //             res.end("ERROR UPDATING PROFILE");
+    //         } else {
+    //             // res.send(result);
+    //             console.log("profile update works");
+    //
+    //             res.status(200).json(result);
+    //             res.end("Successful PROFILE UPDATE");
+    //         }
+    //
+    //
+    //     });
     try {
         const updateUser = await User.findByIdAndUpdate(
             req.params.id,
