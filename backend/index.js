@@ -8,7 +8,7 @@ app.use(cors({origin: 'http://localhost:3000', credentials: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-const db = require("./config");
+const db = require("./Utils/config");
 const path = require('path');
 //set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -51,18 +51,24 @@ const upload = multer({
 
 
 //connect to mongoDB
-//const { mongoDB } = require('./config'); //dotenv.config();
+// const { mongoDB } = require('./Utils/config'); //dotenv.config();
 const mongoose = require('mongoose');
 const dotenv = require("dotenv")
 dotenv.config();
 const Users = require('./Models/UserModel');
 
-const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    poolSize: 500,
-    bufferMaxEntries: 0
-};
+
+const jwt = require('jsonwebtoken');
+const { secret } = require('./Utils/config');
+const { auth } = require("./Utils/passport");
+auth();
+
+// const options = {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     poolSize: 500,
+//     bufferMaxEntries: 0
+// };
 
 // mongoose.connect(mongoDB, options, (err, res) => {
 //     if (err) {
@@ -151,16 +157,23 @@ app.post('/login', async (req, res) => {
             res.writeHead(500, {
                 'Content-Type': 'text/plain'
             })
-            res.end("Error Occured");
+            res.end("Error Occurred");
         }
         if (user) {
             console.log("LOGIN WORKING");
-            res.cookie('cookie', user.username, { maxAge: 900000, httpOnly: false, path: '/' });
-            req.session.user = user;
+            // res.cookie('cookie', user.username, { maxAge: 900000, httpOnly: false, path: '/' });
+            // req.session.user = user;
+
+
+            //jwt
+            const payload = { _id: user._id, username: user.username};
+            const token = jwt.sign(payload, secret, {
+                expiresIn: 1008000
+            });
             res.writeHead(200, {
                 'Content-Type': 'text/plain'
             })
-            res.end();
+            res.status(200).end("JWT " + token);
         }
         else {
             res.writeHead(401, {
