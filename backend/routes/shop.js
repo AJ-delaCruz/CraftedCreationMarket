@@ -45,7 +45,7 @@ router.post('/create', async (req, res) => {
 
 
 
-//update profile
+//update shop
 router.put("/update/:id", async (req, res) => {
 
     try {
