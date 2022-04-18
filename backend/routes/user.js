@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { secret } = require('../Utils/config');
-const Users = require('../Models/UserModel');
+const User = require('../Models/UserModel');
 const { auth } = require("../utils/passport");
 auth();
 
@@ -11,7 +11,7 @@ auth();
 router.post('/signup', async (req, res) => {
     console.log("Inside SiGN UP POST");
 
-    const newUser = new Users({
+    const newUser = new User({
         username: req.body.email,
         password: req.body.password,
 
@@ -20,8 +20,8 @@ router.post('/signup', async (req, res) => {
     console.log(req.body.email);
     console.log(req.body.password);
 
-    Users.findOne({ username: req.body.email }, (error, userTaken) => {
-        if (error) {
+    User.findOne({ username: req.body.email }, (err, userTaken) => {
+        if (err) {
             console.log(err);
             console.log("ERROR SIGNING UP");
             res.writeHead(500, {
@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
     console.log(usernameValue);
     console.log(passwordValue);
 
-    Users.findOne({ username: req.body.username, password: req.body.password }, (error, user) => {
+    User.findOne({ username: req.body.username, password: req.body.password }, (error, user) => {
         if (error) {
             console.log("LOGIN NOT WORKING");
             res.writeHead(500, {
@@ -102,5 +102,51 @@ router.post('/login', async (req, res) => {
 
 
 });
+
+
+//update profile
+router.put("/:id",  async (req, res) => {
+
+        // await User.findByIdAndUpdate( req.params.id, { $set: req.body, }, { new: true },
+        //     (err, result) =>
+        //     {
+        //         if (err) {
+        //             console.log(err);
+        //             console.log("ERROR UPDATING PROFILE");
+        //             res.writeHead(400, {
+        //                 'Content-Type': 'text/plain'
+        //             })
+        //             res.end("ERROR UPDATING PROFILE");
+        //         } else {
+        //             // res.send(result);
+        //             console.log("profile update works");
+        //
+        //             res.status(200).json(result);
+        //             res.end("Successful PROFILE UPDATE");
+        //         }
+        //
+        //
+        //     });
+    try {
+        const updateUser = await User.findByIdAndUpdate(
+            req.params.id,
+            {
+                $set: req.body,
+            },
+            {new: true}
+        );
+        console.log("profile update works");
+        res.status(200).json(updateUser);
+        res.end("Successful PROFILE UPDATE");
+    } catch (err) {
+        console.log(err);
+        console.log("ERROR UPDATING PROFILE");
+        res.status(500).json(err);
+
+    }
+
+
+});
+
 
 module.exports = router;
