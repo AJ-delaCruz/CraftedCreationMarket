@@ -1,56 +1,65 @@
-import React, {Component} from 'react';
-import '../../App.css';
+import React from 'react';
 import Footer from "../Footer/Footer";
 import Navbar from "../LandingPage/Navbar";
 import {Button} from "react-bootstrap";
-
-class Checkout extends Component {
-
-    render() {
-        return (
-            <div style={{marginBottom: "100px"}}>
-                {<Navbar/>}
-                <h1>Checkout page</h1>
+import {useSelector} from "react-redux";
+import {Link} from "react-router-dom";
 
 
-                <div>
-                    <div className="bagTitle">
-                        <h1 style={{fontWeight: "300", textAlign: "center"}}>Bag</h1>
-                    </div>
+const Checkout = () => {
+    const order = useSelector((state) => state.cart);
+    return (
 
-                    <div className="topContainer"
+        <div style={{marginBottom: "100px"}}>
+            {<Navbar/>}
+
+            <div
+                //     style={{
+                //     padding: "250px",
+                // marginTop: "-250px"}}
+            >
+
+
+                <div className="topContainer"
+                     style={{
+                         display: "flex",
+                         textAlign: "center",
+                         justifyContent: "space-between",
+                         // justifyContent: "flex-end",
+                         padding: "20px"
+                     }}>
+
+
+                    <h2 style={{
+                        fontWeight: "300",
+                        textAlign: "center"
+                    }}>{order.quantity > 1 ? order.quantity + " items " : order.quantity + " item "}in your cart</h2>
+
+
+                    <Link to={`/home`}>
+                    <Button style={{
+                        fontWeight: "600",
+                        padding: "10px",
+                    }}>Keep Shopping
+                    </Button>
+                    </Link>
+                < /div>
+
+
+                <div className="bottomContainer"
+                     style={{
+                         display: "flex",
+                         justifyContent: "space-between"
+                     }}>
+
+                    <div className="productInfo"
                          style={{
-                             display: "flex",
-                             textAlign: "center",
-                             justifyContent: "space-between",
-                             padding: "20px"
-                         }}>
-
-                        <Button style={{
-                            fontWeight: "600",
-                            padding: "10px",
-                        }}>Continue</Button>
-
-
-                        <Button style={{
-                            fontWeight: "600",
-                            padding: "10px",
-                        }}>Checkout Now</Button>
-                    < /div>
-
-
-                    <div className="bottomContainer"
-                         style={{
-                             display: "flex",
-                             justifyContent: "space-between"
-                         }}>
-                        <div className="productInfo"
-                             style={{
-                                 // display: "flex",
-                                 flex: 3
-                             }}
-                        >
-                            <div className="product1" style={{
+                             // display: "flex",
+                             flex: 3
+                         }}
+                    >
+                        {order.products.map((item) => (
+                            <div className="product" style={{
                                 display: "flex",
                                 // flex:"2"
                                 // textAlign: "center",
@@ -58,6 +67,7 @@ class Checkout extends Component {
                                 // flexDirection:"column",
                                 // padding: "20px"
                             }}>
+
 
                                 <div className="productDetail" style={{
                                     display: "flex",
@@ -67,9 +77,8 @@ class Checkout extends Component {
                                     // padding: "20px"
                                     flex: "2"
                                 }}>
-                                    <img
-                                        src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A"/>
 
+                                    <img style={{width: "300px"}} src={item.img}/>
                                     <div className="productDescription" style={{
                                         display: "flex",
                                         alignItems: "center",
@@ -79,23 +88,25 @@ class Checkout extends Component {
                                         flex: "1"
                                     }}>
                                         <div className="productName">
-                                            <b>Product:</b> JESSIE THUNDER SHOES
+                                            <b>Product:</b> {item.title}
 
                                         </div>
 
                                         <div className="productCategory" style={{}}>
-                                            <b>Category:</b> 93813718293
+                                            <b>Category:</b> {item.categories}
 
                                         </div>
 
                                         <div className="productCategory" style={{}}>
-                                            <b>Description:</b> Size 37.5
+                                            <b>Description:</b> {item.desc}
 
                                         </div>
 
                                     </div>
+
                                     {/*productDescription*/}
                                 </div>
+
                                 {/*productDetail*/}
 
                                 <div className="priceDetails" style={{
@@ -114,210 +125,114 @@ class Checkout extends Component {
                                              // justifyContent: "space-between"
                                          }}>
                                         <Button>-</Button>
-                                        <span style={{margin: "10px"}}>2</span>
+                                        <span style={{margin: "10px"}}>{item.quantity}</span>
                                         <Button>+</Button>
                                     </div>
 
                                     <div className="price"
-                                         style={{fontWeight: "200", fontSize: "35px"}}>
-                                        $30
+                                         style={{fontWeight: "200", fontSize: "35px", marginRight: "20px"}}>
+                                        $ {item.price}
                                     </div>
 
                                 </div>
                                 {/*priceDetails*/}
-                            </div>
-                            {/*product*/}
-
-
-                            {/******************************************************************************/}
-                            <hr
-                                style={{
-                                    backgroundColor: "black",
-                                    height: "1px",
-                                    // margin: "100px",
-                                    // border:"none"
-                                }}
-                            />
-
-
-                            <div className="products" style={{
-                                display: "flex",
-                                // flex:"2"
-                                // textAlign: "center",
-                                justifyContent: "space-between",
-                                // flexDirection:"column",
-                                // padding: "20px"
-                            }}>
-
-                                <div className="productDetail" style={{
-                                    display: "flex",
-                                    // textAlign: "center",
-                                    // justifyContent: "space-around",
-                                    // flexDirection: "column",
-                                    // padding: "20px"
-                                    flex: "2"
-                                }}>
-                                    <img
-                                        src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A"/>
-
-                                    <div className="productDescription" style={{
-                                        display: "flex",
-                                        // alignItems: "center",
-                                        justifyContent: "space-evenly",
-                                        flexDirection: "column",
-                                        // padding: "20px"
-                                        // flex: "1"
-                                        padding: "20px"
-                                    }}>
-                                        <div className="productName">
-                                            <b>Product:</b> JESSIE THUNDER SHOES
-
-                                        </div>
-
-                                        <div className="productCategory" style={{}}>
-                                            <b>Category:</b> 93813718293
-
-                                        </div>
-
-                                        <div className="productCategory" style={{}}>
-                                            <b>Description:</b> Size 37.5
-
-                                        </div>
-
-                                    </div>
-                                    {/*productDescription*/}
-                                </div>
-                                {/*productDetail*/}
-
-                                <div className="priceDetails" style={{
-                                    display: "flex",
-                                    flex: "1",
-                                    alignItems: "center",
-                                    // margin: "200px"
-                                    justifyContent: "center",
-                                    flexDirection: "column"
-                                }}>
-                                    <div className="priceContainer"
-                                         style={{
-                                             display: "flex",
-                                             alignItems: "center",
-                                             marginBottom: "20px"
-                                             // justifyContent: "space-between"
-                                         }}>
-                                        <Button>-</Button>
-                                        <span style={{margin: "10px"}}>2</span>
-                                        <Button>+</Button>
-                                    </div>
-
-                                    <div className="price"
-                                         style={{fontWeight: "200", fontSize: "35px"}}>
-                                        $30
-                                    </div>
-
-                                </div>
-                                {/*priceDetails*/}
-                            </div>
-                            {/*product*/}
-
-                        </div>
-                        {/*productInfo*/}
-
-                        <div className="orderSummary"
-                             style={{
-                                 // display: "flex",
-                                 // margin:"30px 0px",
-                                 // alignItems: "center",
-                                 border: "0.5px solid lightgray",
-                                 borderRadius: "20px",
-                                 // margin: "200px"
-                                 // justifyContent: "space-between"
-                                 flexDirection: "column",
-                                 flex: "1",
-                                 // height:"90%"
-                                 height: "55vh",
-                                 padding: "20px"
-                             }}>
-                            <h1 style={{fontWeight: "150"}}>ORDER SUMMARY</h1>
-
-                            <div className="productSummary"
-                                 style={{
-                                     display: "flex",
-                                     justifyContent: "space-between",
-                                     margin: "30px 0px"
-                                 }}>
-
-
-                                    <span>Subtotal</span>
-                                    <span>$ 80</span>
-                                </div>
-
-                            <div className="productSummary"
-                                 style={{
-                                     display: "flex",
-                                     justifyContent: "space-between",
-                                     margin: "30px 0px"
-                                 }}>
-                                    <span>Shipping</span>
-                                    <span>$ 80</span>
-                                </div>
-
-
-                            <div className="productSummary"
-                                 style={{
-                                     display: "flex",
-                                     justifyContent: "space-between",
-                                     margin: "30px 0px"
-                                 }}>
-                                    <span>Discount</span>
-                                    <span>$ 80</span>
-
-                                </div>
-
-
-                            <hr
-                                style={{
-                                    backgroundColor: "black",
-                                    height: "1px",
-                                    // margin: "100px",
-                                    // border:"none"
-                                }}
-                            />
-                            <div className="productSummary"
-                                 style={{
-                                     display: "flex",
-                                     justifyContent: "space-between",
-                                     margin: "30px 0px",
-                                     marginBottom:"30px"
-                                 }}>
-
-
-                                <h2>Total </h2>
-                                <h2>$ 80</h2>
 
                             </div>
 
-                            <Button style={{
-                                width:"100%",
-                                padding:"10px",
-                                // display: "flex",
-                                // alignItems: "center",
-                                // justifyContent: "center",
-                                // margin: "30px 0px"
-                                // marginTop:"-30px"
-                            }}>
-                                CHECKOUT NOW
-                            </Button>
 
-                        </div>
-                        {/*Summary*/}
+                        ))}
+
+
                     </div>
-                    {/*bottom container*/}
+                    {/*productInfo*/}
 
+                    <div className="orderSummary"
+                         style={{
+                             // display: "flex",
+                             // margin:"30px 0px",
+                             // alignItems: "center",
+                             border: "0.5px solid lightgray",
+                             borderRadius: "20px",
+                             // margin: "200px"
+                             // justifyContent: "space-between"
+                             flexDirection: "column",
+                             flex: "1",
+                             // height:"90%"
+                             height: "55vh",
+                             padding: "20px"
+                         }}>
+                        <h1 style={{fontWeight: "150"}}>ORDER SUMMARY</h1>
+                        <div className="productSummary"
+                             style={{
+                                 display: "flex",
+                                 justifyContent: "space-between",
+                                 margin: "30px 0px"
+                             }}>
+
+
+                            <span>Items(s)</span>
+                            <span>$ {order.totalPrice}</span>
+                        </div>
+
+                        <div className="productSummary"
+                             style={{
+                                 display: "flex",
+                                 justifyContent: "space-between",
+                                 margin: "30px 0px"
+                             }}>
+                            <span>Shipping</span>
+                            <span style={{color: "green"}}> Free </span>
+                        </div>
+
+
+                        <hr
+                            style={{
+                                backgroundColor: "black",
+                                height: "1px",
+                                // margin: "100px",
+                                // border:"none"
+                            }}
+                        />
+                        <div className="productSummary"
+                             style={{
+                                 display: "flex",
+                                 justifyContent: "space-between",
+                                 margin: "30px 0px",
+                                 marginBottom: "30px"
+                             }}>
+
+
+                            <h2>Total {order.quantity > 1 ? "(" + order.quantity + " items)" : "(" + order.quantity + " item)"} </h2>
+                            <h2>$ {order.totalPrice}</h2>
+                            {/*{cart.totalPrice}*/}
+
+                        </div>
+
+                        <Button style={{
+                            width: "100%",
+                            padding: "10px",
+                            backgroundColor: "black",
+                            borderRadius: "50px",
+                            // borderRadius: "0%"
+                            // display: "flex",
+                            // alignItems: "center",
+                            // justifyContent: "center",
+                            // margin: "30px 0px"
+                            // marginTop:"-30px"
+                        }}>
+                            Proceed to checkout
+                        </Button>
+
+                    </div>
+                    {/*Summary*/}
                 </div>
-                {<Footer/>}
+                {/*bottom container*/}
+
             </div>
-        )
-    }
+            {/*{<Footer/>}*/}
+        </div>
+    )
+
 }
 
 //export Checkout Component
