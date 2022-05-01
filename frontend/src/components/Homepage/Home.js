@@ -28,16 +28,7 @@ class Home extends Component {
     }
 
     render(){
-        //iterate over books to create a table row
-        let details = this.state.users.map((x, key) => {
-            return(
-                <tr>
-                    <td>{x.username}</td>
-                    <td>{x.password}</td>
-                </tr>
-            )
-        })
-        //if not logged in go to login page
+
         let redirectVar = null;
         // if(!cookie.load('cookie')){
         //     redirectVar = <Navigate to= "/login"/>
@@ -45,26 +36,13 @@ class Home extends Component {
         return(
             <div >
                 {redirectVar}
-                {<Navbar/>}
-                {<Category/>}
-                {<ProductList/>}
-                <div class="container">
-                    <h2>Shopping</h2>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Password</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {/*Display the data*/}
-                        {details}
-                        </tbody>
-                    </table>
-                </div>
+                {/*{<Navbar/>}*/}
+                {/*{<Category/>}*/}
+                <Navbar/>
+                <Category/>
+                <ProductList/>
+                {/*{<Footer/>}*/}
 
-                {<Footer/>}
             </div>
         )
     }
