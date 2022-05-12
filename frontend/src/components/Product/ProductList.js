@@ -1,92 +1,122 @@
-import Product from "./Product";
-import {popularProducts} from "./data";
-import React, {Component} from "react";
-import Navbar from "../LandingPage/Navbar";
-import {sellerItems} from "../Shop/data";
-import Category from "./Category";
-class ProductList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            searchItem: "",
-            // favoriteItems: [],
-            authFlag: false,
-            errorMsg: "",
-            msg: "",
 
-        }
-        // this.searchHandler = this.searchHandler.bind(this);
-        // this.submitSearch = this.submitSearch.bind(this);
-    }
-    searchHandler = (child) => {
-        this.setState({searchItem: child}) //pass data from navbar search to list the products
-        // this.setState({msg: child})
-    }
+import Products from "./Products";
+import styled from "styled-components";
+import {useLocation} from "react-router";
+import {useState} from "react";
+import {useSelector} from "react-redux";
+// import {useState} from "react";
+// import {useLocation} from "react-router";
+
+const Container = styled.div``;
 
 
-    render() {
-        const {searchItem} = this.state;
-        // console.log(searchItem)
-        // const findItem = popularProducts.filter(x => x.name === this.state.searchItem);
-        // console.log("test");
-        // console.log(findItem);
-        // this.setState({
-        //     favoriteItems: popularProducts.filter(x => x.name === searchItem)
-        // })
+const Title = styled.h1`
+  margin: 20px;
+`;
 
+const FilterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
-           let favoriteItems =  popularProducts.filter(x => x.name === searchItem)
+const Filter = styled.div`
+  margin: 20px;
+`;
 
+const FilterText = styled.span`
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 20px;
+`;
 
-        let filter = searchItem !== "" ? favoriteItems.map((x, key) => (
+const Select = styled.select`
+  padding: 10px;
+  margin-right: 20px;
+`;
+const Option = styled.option``;
 
-                <Product item={x} key={x.id}/>
-            ))
-            :
-            popularProducts.map((x, key) => (
-                <Product item={x} key={x.id}/>
-            ))
-        return (
-            // <div className="container" style={{flexWrap: "wrap", alignItems: 'center', display: "flex"}}>
-            <div>
-                {/*{popularProducts.map((x) => (*/}
-                {/*    <Product item={x} key={x.id}/>*/}
-                {/*))}*/}
+const ProductList = () => {
+    const location = useLocation();
+    console.log(location);
+    const cat = location.pathname.split("/")[2];
+    console.log("cat " +cat);
+    // console.log(location.pathname.split("/")[1]);
+    const [filters, setFilters] = useState({});
+    const [sort, setSort] = useState("newest");
 
+    //from redux store
+    const searchProduct = useSelector(state => state.search.product);
+    console.log("search? = " + searchProduct);
 
-                <Navbar parentCallback = {this.searchHandler}/>
-
-                <div className="container" style={{flexWrap: "wrap", alignItems: 'center', display: "flex"}}>
-                {<Category/>}
-                    {filter}
-
-                {/*{searchItem !== "" ? this.state.favoriteItems.map((x, key) => (*/}
-                {/*        <Product item={x} key={x.id}/>*/}
-                {/*    ))*/}
-                {/*    :*/}
-                {/*    popularProducts.map((x, key) => (*/}
-                {/*        <Product item={x} key={x.id}/>*/}
-                {/*    ))*/}
-                {/*}*/}
-                </div>
-            </div>
-        );
+    const handleFilters = (e) => {
+        const value = e.target.value;
+        console.log(value);
+        setFilters({
+            ...filters,
+            [e.target.name]: value,
+        });
     };
-}
-//     handleCallback = (childData) =>{
-//         this.setState({msg: childData})
-//     }
-//
-//     render() {
-//         const {msg} = this.state;
-//         return(
-//             <div>
-//
-//                 <Navbar parentCallback = {this.handleCallback}/>
-//                 {<Category/>}
-//                 <h1> {msg}</h1>
-//             </div>
-//         );
-//     }
-// }
+    console.log(filters);
+    return (
+
+        <div>
+
+            <div>Hello</div>
+            <Title>{cat}</Title>
+            <FilterContainer>
+                <Filter>
+                    <FilterText>Filter Products:</FilterText>
+                    <Select name="Color" onChange={handleFilters}>
+                        <Option disabled>Color</Option>
+                        {/*<Option value = "White">White</Option>*/}
+                        <Option>White</Option>
+
+                        <Option>Black</Option>
+                        <Option>red</Option>
+                        <Option>blue</Option>
+                        <Option>Yellow</Option>
+                        {/*<Option value = "Yellow">Yellow</Option>*/}
+
+                        <Option>green</Option>
+                    </Select>
+                    <Select name="Size" onChange={handleFilters}>
+                        <Option disabled>Size</Option>
+                        <Option value="S">S</Option>
+                        <Option value="M">M</Option>
+                        <Option value="L">L</Option>
+
+                    </Select>
+                </Filter>
+
+                <Filter>
+                    <FilterText>Sort Products:</FilterText>
+                    <Select onChange={(e) => setSort(e.target.value)}>
+                        <Option value="newest">Newest</Option>
+                        <Option value="asc">Price (asc)</Option>
+                        <Option value="desc">Price (desc)</Option>
+                    </Select>
+                </Filter>
+
+            </FilterContainer>
+
+
+            {/*<Products/>*/}
+            {/*{(typeof searchProduct === 'string') ? <Products categories={cat} filters={filters} sort={sort} searchValue={searchProduct}/> :*/}
+            {/*    <Products categories={cat} filters={filters} sort={sort} />*/}
+            <Products categories={cat} filters={filters} sort={sort} searchValue={searchProduct}/>
+            }
+        </div>
+    );
+};
+
 export default ProductList;
+
+
+// import Products from "./Products";
+//
+// const ProductList= () => {
+//     return (
+//         <Products/>
+//     );
+// };
+// export default ProductList;

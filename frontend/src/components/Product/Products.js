@@ -3,36 +3,41 @@ import styled from "styled-components";
 import {popularProducts} from "./data";
 import Product from "./Product";
 import axios from "axios";
+import {useSelector} from "react-redux";
 
 
-const Products = ({categories, filters, sort}) => {
+const Products = ({categories, filters, sort, searchValue}) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+
+
 
     useEffect(() => {
         const getProducts = async () => {
             try {
                 const res = await axios.get(
-                    categories
-                        ? `http://localhost:3001/products/productList?category=${categories}`
+                    searchValue !== "" ? `http://localhost:3001/products/productList?title=${searchValue}`
                         :
-                        "http://localhost:3001/products/productList"
+                        categories
+                            ? `http://localhost:3001/products/productList?category=${categories}`
+                            :
+                            "http://localhost:3001/products/productList"
                 );
                 setProducts(res.data);
                 console.log("GET PRODUCTS");
                 console.log(res.data);
                 console.log(categories)
+                console.log("title search =" + searchValue);
 
             } catch (err) {
                 console.log(err);
             }
         };
         getProducts();
-    }, [categories]);
+    }, [searchValue, categories]); //changes when click to another category or search
 
 
     useEffect(() => {
-        categories &&
         setFilteredProducts(
             products.filter((item) =>
                 Object.entries(filters).every(([key, value]) =>
@@ -40,9 +45,15 @@ const Products = ({categories, filters, sort}) => {
                 )
             )
         );
-    }, [products, categories, filters]);
+    }, [searchValue, products, categories, filters]);
 
+    //SORT
     useEffect(() => {
+        // if (sort === "newest") {
+        //     setFilteredProducts((prev) =>
+        //         [...prev].sort((a, b) => a.createdAt - b.createdAt)
+        //     );
+        // } else
         if (sort === "asc") {
             setFilteredProducts((prev) =>
                 [...prev].sort((a, b) => a.price - b.price)
@@ -62,11 +73,14 @@ const Products = ({categories, filters, sort}) => {
             flexWrap: "wrap",
             justifyContent: "space-between"
         }}
-             key={products.id}>
-            {categories //return products if there's a category
+        >
+            {filteredProducts //return filtered products
                 ? filteredProducts.map((item) => <Product item={item} key={item.id}/>)
-                //return products array
+                //else return all products
                 : products.map((item) => <Product item={item} key={item.id}/>)}
+
+
+            {/*{filteredProducts.map((item) => <Product item={item} key={item.id}/>)}*/}
 
         </div>
     );

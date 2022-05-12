@@ -6,14 +6,45 @@ import {Link, NavLink} from 'react-router-dom';
 // import {sellerItems} from "../Shop/data";
 // import {popularProducts} from "../Product/data";
 // import Category from "../Product/Category";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Badge from '@mui/material/Badge';
+import {useState} from 'react';
+import {searchProduct} from "../../modernRedux/searchRedux";
+import {useEffect} from "react";
+import {useLocation} from "react-router";
 
 
 const Navbar = () => {
 
     const quantity = useSelector(state => state.cart.quantity);
-    console.log(quantity);
+    // console.log(quantity);
+
+    const [search, setSearch] = useState("");
+    // console.log(search);
+    const dispatch = useDispatch();
+
+    const location = useLocation();
+    // console.log(location.pathname.split("/")[1]);
+    const path = location.pathname.split("/")[1]
+    // console.log("path = " +path)
+
+    useEffect(() => {
+        if(path !== "home") {
+            dispatch(
+                searchProduct(" ")
+            );
+        }
+        // console.log("newsearch = "+search);
+
+    })
+
+    //redux
+    const handleClick = () => {
+        // console.log(search);
+        dispatch(
+            searchProduct(search)
+        );
+    };
     //handle logout to destroy the cookie
     // const handleLogout = () => {
     //     cookie.remove('cookie', {path: '/'})
@@ -60,18 +91,25 @@ const Navbar = () => {
         <div className="navigationBar">
             {redirectVar}
             <nav id="navbar-example2" className="navbar navbar-dark bg-light ">
-                <Link to={`/home`}>
-                <h2 style={{color: "#fa8072", paddingLeft: "40px"}} className="title">
-                    Etsy
-                </h2>
+                <Link to={`/home`} style={{textDecoration: "none"}}>
+                {/*      onClick={() => setSearch("lol") && handleClick}*/}
+                {/*>*/}
+                    <h2 style={{color: "#fa8072", paddingLeft: "50px"}} className="title">
+                        Etsy
+                    </h2>
                 </Link>
                 <div style={{display: 'flex'}}>
-                    <form style={{display: 'flex'}}
+                    <form style={{
+                        display: 'flex',
+                    }}
+                          onClick={handleClick}
                         // onSubmit={submitSearch}
+
                     >
                         <input type="text" placeholder="Search for anything"
                                style={{width: "1000px"}}
                             // onChange={searchHandler}
+                               onChange={(e) => setSearch(e.target.value)}
                         />
                         {/*onChange={this.searchHandler}*/}
                         <div className="btn btn-light btn-outline-secondary ">
@@ -153,9 +191,6 @@ const Navbar = () => {
                                         d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                                 </svg>
                             </Badge>
-                            {/*<Badge badgecontent={quantity} color="primary">*/}
-                            {/*    <ShoppingCartOutlined />*/}
-                            {/*</Badge>*/}
                         </NavLink>
 
 
