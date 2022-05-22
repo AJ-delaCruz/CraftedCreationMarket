@@ -1,122 +1,114 @@
-import React, {Component} from 'react';
-import '../../App.css';
-import axios from 'axios';
-import cookie from 'react-cookies';
-import {Navigate} from 'react-router';
+import React, {useState} from "react";
+import jwt_decode from 'jwt-decode';
+import styled from "styled-components";
+import {Button} from "@mui/material";
+import axios from "axios";
 
-//Define a Login Component
-class Login extends Component {
-    //call the constructor method
-    constructor(props) {
-        //Call the constrictor of Super class i.e The Component
-        super(props);
-        //maintain the state required for this component
-        this.state = {
-            username: "",
-            password: "",
-            authFlag: false,
-            errorMsg: ""
-        }
-        //Bind the handlers to this class
-        this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
-        this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
-        this.submitLogin = this.submitLogin.bind(this);
-    }
+function Login() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    //Call the Will Mount to set the auth Flag to false
-    componentWillMount() {
-        this.setState({
-            authFlag: false
-        })
-    }
 
-    //username change handler to update state variable with the text entered by the user
-    usernameChangeHandler = (e) => {
-        this.setState({
-            username: e.target.value
-        })
-    }
-    //password change handler to update state variable with the text entered by the user
-    passwordChangeHandler = (e) => {
-        this.setState({
-            password: e.target.value
-        })
-    }
-    //submit Login handler to send a request to the node backend
-    submitLogin = (e) => {
-        var headers = new Headers();
-        //prevent page from refresh
-        e.preventDefault();
-        const data = {
-            username: this.state.username,
-            password: this.state.password
-        }
+    //button to login
+    const submitLogin = () => {
+        const data = {username, password}
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/login', data)
-            .then(response => {
-                console.log("Status Code : ", response.status);
-                if (response.status === 200) {
-                    this.setState({
-                        authFlag: true
-                    })
-                } else {
-                    this.setState({
-                        authFlag: false
-                    })
-                }
+        axios.post('http://localhost:3001/user/login', data)
+            .then(res => {
+                console.log(data);
+                //auth
+                const token = res.data;
+                const decoded = jwt_decode(token.split(' ')[1]);
+                console.log("decoded " + decoded);
+                console.log(decoded);
+                console.log(decoded._id);
+                console.log(decoded.username);
+
+                localStorage.setItem("token", token);
+                localStorage.setItem("user_id", decoded.id);
+                localStorage.setItem("username", decoded.username);
+
             })
             .catch(err => {
                 console.log(err);
-                //set invalid email message
-                this.setState({
-                    errorMsg: "Invalid username or password."
-                });
+                //set invalid message
+                setError(err.message);
+
             });
+
     }
 
-    render() {
-        //redirect based on successful login
-        let redirectVar = null;
-        if (cookie.load('cookie')) {
-            redirectVar = <Navigate to="/home"/>
-        }
-        return (
-            <div>
-                {redirectVar}
-                <div class="container">
 
-                    <div class="login-form">
-                        <div class="main-div">
-                            <div class="panel">
-                                <h2>Admin Login</h2>
-                                <p>Please enter your username and password</p>
-                            </div>
+    return (
+        <Container>
+            <Wrapper>
+                <Title>LOG IN</Title>
+                <Form>
+                    <Input placeholder="username" type="text" onChange={(e) => {
+                        setUsername(e.target.value);
+                    }}/>
 
-                            <form onSubmit={this.submitLogin}>
-                                <div class="form-group">
-                                    <input onChange={this.usernameChangeHandler} type="text" class="form-control"
-                                           name="username" placeholder="Username" required/>
-                                </div>
-                                <div class="form-group">
-                                    <input onChange={this.passwordChangeHandler} type="password" class="form-control"
-                                           name="password" placeholder="Password" required/>
-                                </div>
-                                <button class="btn btn-primary">Login</button>
-                                <p style={{color: "red", fontWeight: "bold"}}>
-                                    <br/>
-                                    {this.state.errorMsg}
-                                </p>
-                            </form>
-                        </div>
-                    </div>
+                    <Input placeholder="password" type="password" onChange={(e) => {
+                        setPassword(e.target.value);
+                    }}/>
 
-                </div>
-            </div>
-        )
-    }
+                    <Button style={{
+                        width: "50%",
+                        border: "none",
+                        padding: "15px",
+                        backgroundColor: "blue",
+                        color: "white",
+                        cursor: "pointer",
+                        margin: "10px",
+                    }}
+                            onClick={submitLogin}>
+                        Log In
+                    </Button>
+                </Form>
+            </Wrapper>
+        </Container>
+    );
 }
 
-//export Login Component
+const Container = styled.div`
+width: 100vw;
+height: 50vh;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
+const Wrapper = styled.div`
+width: 40%;
+padding: 20px;
+background-color: #f5fbfd;;
+`;
+
+const Title = styled.h1`
+font-size: 24px;
+font-weight: 300;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
+const Form = styled.form`
+display: flex;
+flex-wrap: wrap;
+flex-direction: column;
+align-items: center;
+`;
+
+const Input = styled.input`
+flex: 1;
+width: 500px;
+margin: 20px 10px 0px 0px;
+padding: 10px;
+text-align: center
+`;
+
+
 export default Login;
