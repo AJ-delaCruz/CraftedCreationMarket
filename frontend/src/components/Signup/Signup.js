@@ -1,202 +1,116 @@
-import React, {Component} from "react";
-import '../../App.css';
-import axios from 'axios';
-import cookie from "react-cookies";
+import React, {useState} from "react";
+import styled from "styled-components";
 import {Navigate} from "react-router";
+import {useHistory, Redirect} from "react-router-dom";
+import {Button} from "@mui/material";
+import axios from "axios";
 
-class Signup extends Component {
-    constructor(props) {
-        super(props);
+function Signup() {
 
-        this.state = {
-            firstName: "",
-            lastName: "",
-            street: "",
-            city: "",
-            state: "",
-            country: "",
-            zipcode: "",
-            username: "",
-            phoneNum: "",
-            password: "",
-            authFlag: false,
-            errorMsg: null,
-        };
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-        this.submitSignup = this.submitSignup.bind(this);
-        this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
-        this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
-
-    }
-
-
-    //username change handler
-    usernameChangeHandler = (e) => {
-        this.setState({
-            username: e.target.value
-        })
-    }
-
-    //password change handler to update state variable with the text entered by the user
-    passwordChangeHandler = (e) => {
-        this.setState({
-            password: e.target.value
-        })
-    }
-
-    submitSignup(e) {
-        var headers = new Headers();
-        //prevent page from refresh
-        e.preventDefault();
-        const data = {
-            // firstName: this.state.firstName,
-            // LastName: this.state.LastName,
-            // street: this.state.street,
-            // city: this.state.city,
-            // state: this.state.state,
-            // country: this.state.country,
-            // zipcode: this.state.zipcode,
-            username: this.state.username,
-            // phoneNum: this.state.phoneNum,
-            password: this.state.password
-        }
+    //button to signuo
+    const submitSignup = () => {
+        const data = {"name":name, "username": username, "password":password}
         //set the with credentials to true
-        axios.defaults.withCredentials = true;
+        // axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/signup', data)
-            .then(response => {
-                console.log("Status Code : ", response.status);
-                if (response.status === 200) {
-                    this.setState({
-                        authFlag: true
-                    })
-                } else {
-                    this.setState({
-                        authFlag: false
-                    })
-                }
+        axios.post('http://localhost:3001/user/signup', data)
+            .then(res => {
+                console.log(res.data);
             })
             .catch(err => {
                 console.log(err);
                 //set invalid message
-                this.setState({
-                    errorMsg: "Invalid."
-                });
+                setError(err.message);
             });
-
     }
 
-    render() {
-        let redirectVar = null;
-        if (this.state.authFlag) {
-            redirectVar = <Navigate to="/profile"/>
-        }
+    // let redirectVar = null;
+    // if (this.state.authFlag) {
+    //     redirectVar =  <Navigate to="/home"/>
+    //
+    // }
+    return (
+
+        <Container>
+            {/*{ redirectVar}*/}
+            <Wrapper>
+                <Title>CREATE AN ACCOUNT</Title>
+                <Form>
+
+                    <Input placeholder="Name" onChange={(e) => {
+                        setName(e.target.value);
+                    }}/>
 
 
-        return (
-            <div>
-                {redirectVar}
-                <div className="container">
-                    <div className="singup-form">
-                        <div className="main-div">
-                            <div className="panel">
-                                <h2>Sign up</h2>
-                            </div>
+                    <Input placeholder="username" onChange={(e) => {
+                        setUsername(e.target.value);
+                    }}/>
 
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="firstName"*/}
-                            {/*        placeholder="First Name"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="lastName"*/}
-                            {/*        placeholder="Last name"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input type="date" className="form-control" name="dataOfBith"/>*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="address1"*/}
-                            {/*        placeholder="Street"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="city"*/}
-                            {/*        placeholder="City"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="state"*/}
-                            {/*        placeholder="State"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="country"*/}
-                            {/*        placeholder="Country"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="zipCode"*/}
-                            {/*        placeholder="Zip Code"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            <div className="form-group">
-                                <input
-                                    onChange={this.usernameChangeHandler}
-                                    type="text"
-                                    className="form-control"
-                                    name="username"
-                                    placeholder="username"
-                                />
-                            </div>
-                            {/*<div className="form-group">*/}
-                            {/*    <input*/}
-                            {/*        type="text"*/}
-                            {/*        className="form-control"*/}
-                            {/*        name="phoneNumber"*/}
-                            {/*        placeholder="Phone number"*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            <div className="form-group">
-                                <input
-                                    onChange={this.passwordChangeHandler}
-                                    type="Password"
-                                    className="form-control"
-                                    // name="password"
-                                    placeholder="Password"
-                                />
-                            </div>
-                            <button onClick={this.submitSignup} className="btn btn-primary">
-                                Register
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+                    <Input placeholder="password" type="password" onChange={(e) => {
+                        setPassword(e.target.value);
+                    }}/>
+
+                    <Button style={{
+                        width: "50%",
+                        border: "none",
+                        padding: "15px",
+                        backgroundColor: "blue",
+                        color: "white",
+                        cursor: "pointer",
+                        margin: "10px",
+                    }}
+                            onClick={submitSignup}>
+                        Register
+                    </Button>
+                </Form>
+            </Wrapper>
+        </Container>
+    );
 }
 
+const Container = styled.div`
+width: 100vw;
+height: 50vh;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
+const Wrapper = styled.div`
+width: 40%;
+padding: 20px;
+background-color: #f5fbfd;;
+`;
+
+const Title = styled.h1`
+font-size: 24px;
+font-weight: 300;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
+const Form = styled.form`
+display: flex;
+flex-wrap: wrap;
+flex-direction: column;
+align-items: center;
+`;
+
+const Input = styled.input`
+flex: 1;
+width: 500px;
+margin: 20px 10px 0px 0px;
+padding: 10px;
+text-align: center
+`;
+
+
 export default Signup;
+
+
