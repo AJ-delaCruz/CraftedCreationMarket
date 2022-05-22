@@ -4,19 +4,43 @@ import Navbar from "../LandingPage/Navbar";
 import {Button} from "react-bootstrap";
 import {useSelector} from "react-redux";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 
 const Checkout = () => {
     const order = useSelector((state) => state.cart);
+    const userId = localStorage.getItem("user_id");
+    console.log(order.products[0]);
+    console.log(userId);
+
+    //button to order
+    const submitOrder = () => {
+        axios.defaults.withCredentials = true;
+
+        order.products.map((newOrder) => {
+            console.log(newOrder);
+            axios.post("http://localhost:3001/orders/create", {"userId": userId, order: newOrder})
+                .then((res) => {
+                    console.log(res.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+        });
+        console.log("Submit order");
+    };
+
+
     return (
 
         <div style={{marginBottom: "100px"}}>
             {<Navbar/>}
 
             <div
-                //     style={{
-                //     padding: "250px",
-                // marginTop: "-250px"}}
+                style={{
+                    padding: "250px",
+                    marginTop: "-250px"
+                }}
             >
 
 
@@ -33,15 +57,16 @@ const Checkout = () => {
                     <h2 style={{
                         fontWeight: "300",
                         textAlign: "center"
-                    }}>{order.quantity > 1 ? order.quantity + " items " : order.quantity + " item "}in your cart</h2>
+                    }}>{order.quantity > 1 ? order.quantity + " items " : order.quantity + " item "}in your
+                        cart</h2>
 
 
                     <Link to={`/home`}>
-                    <Button style={{
-                        fontWeight: "600",
-                        padding: "10px",
-                    }}>Keep Shopping
-                    </Button>
+                        <Button style={{
+                            fontWeight: "600",
+                            padding: "10px",
+                        }}>Keep Shopping
+                        </Button>
                     </Link>
                 < /div>
 
@@ -98,7 +123,7 @@ const Checkout = () => {
                                         </div>
 
                                         <div className="productCategory" style={{}}>
-                                            <b>Description:</b> {item.desc}
+                                            <b>Description:</b> {item.description}
 
                                         </div>
 
@@ -208,7 +233,7 @@ const Checkout = () => {
 
                         </div>
 
-                        <Button style={{
+                        <Button onClick={submitOrder} style={{
                             width: "100%",
                             padding: "10px",
                             backgroundColor: "black",
@@ -220,7 +245,7 @@ const Checkout = () => {
                             // margin: "30px 0px"
                             // marginTop:"-30px"
                         }}>
-                            Proceed to checkout
+                            Place Order
                         </Button>
 
                     </div>
@@ -232,6 +257,7 @@ const Checkout = () => {
             {/*{<Footer/>}*/}
         </div>
     )
+
 
 }
 
