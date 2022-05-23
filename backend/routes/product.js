@@ -2,12 +2,27 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../Models/ProductModel");
+const Order = require("../Models/OrderModel");
 
 
 //create product
 router.post("/create", async (req, res) => {
     console.log("INSIDE PRODUCT POST");
-    const newProduct = new Product(req.body);
+    // console.log(req.body)
+    console.log(req.body.userId);
+    console.log(req.body.shopName);
+    const newProduct = new Product({
+        sellerId: req.body.userId,
+        shopName: req.body.shopName,
+        title: req.body.title,
+        description: req.body.description,
+        img: req.body.img,
+        categories: req.body.categories,
+        quantity: req.body.quantity,
+        price: req.body.price,
+
+    });
+    console.log(newProduct);
 
     try {
         console.log("SUCCESS CREATING PRODUCT");
@@ -17,6 +32,9 @@ router.post("/create", async (req, res) => {
         console.log("ERROR CREATING PRODUCT");
         res.status(500).json(err);
     }
+
+
+
 });
 
 //Update product
@@ -70,10 +88,11 @@ router.get("/find/:id", async (req, res) => {
 
 //GET all product
 router.get("/productList", async (req, res) => {
-    console.log("INSIDE PRODUCT GET");
+    console.log("INSIDE PRODUCT GET AlL");
 
     const query = req.query.new;
     const categories = req.query.category;
+    const productName = req.query.title;
     try {
         let products;
 
@@ -85,7 +104,15 @@ router.get("/productList", async (req, res) => {
                     $in: [categories], //list products with specific category
                 },
             });
-        } else {
+        }
+        else if (productName) {
+            products = await Product.find({
+                title: {
+                    $in: [productName],
+                },
+            });
+        }
+        else {
             products = await Product.find();
         }
 
@@ -97,4 +124,43 @@ router.get("/productList", async (req, res) => {
     }
 });
 
+//GET seller products
+router.get("/seller", async (req, res) => {
+    console.log("INSIDE PRODUCT FIND");
+    const sellerId = req.query.sellerId;
+    try {
+        const product = await Product.find({sellerId: sellerId});
+        res.status(200).json(product);
+        console.log("SUCCESS SELLER PRODUCT FIND")
+
+    } catch (err) {
+        console.log("ERROR PRODUCT FIND")
+        res.status(500).json(err);
+    }
+});
+
+//favorite
+router.post("/favorites/:id", async (req, res) => {
+    console.log("INSIDE PRODUCT FAVORITE POST");
+
+
+    try {
+        const addFavorite = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                $push: {favorites: req.body.username} ,
+            },
+            {new: true}
+        );
+
+        // const product = await Product.findById(req.params.id);
+        // product.insert(req.body);
+
+        console.log("SUCCESS ADDED FAVORITE PRODUCT")
+        res.status(200).json(addFavorite);
+    } catch (err) {
+        console.log("ERROR FAVORITE PRODUCT");
+        res.status(500).json(err);
+    }
+});
 module.exports = router;
