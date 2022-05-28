@@ -1,8 +1,11 @@
 const connection = new require('./kafka/Connection');
 //topics files
-//var signin = require('./services/signin.js');
-const Books = require('./services/books.js');
+// const Books = require('./services/books.js');
 const Orders = require('./services/order.js');
+const Favorites = require('./services/favorite.js');
+const Products = require('./services/product.js');
+
+
 
 //connect to mongoDB
 const { mongoDB } = require('./Utils/config'); //dotenv.config();
@@ -52,6 +55,9 @@ function handleTopicRequest(topic_name,fname){
 // Add your TOPICs here
 //first argument is topic name
 //second argument is a function that will handle this topic request
-handleTopicRequest("post_book",Books) //sample demo
-handleTopicRequest("post_order",Orders) //sample demo
+// handleTopicRequest("post_book",Books); //sample demo
+handleTopicRequest("post_order",Orders);
+handleTopicRequest("get_product",Products);
+handleTopicRequest("post_favorite",Favorites);
+
 
