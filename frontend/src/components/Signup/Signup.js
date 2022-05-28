@@ -25,7 +25,7 @@ function Signup() {
             .catch(err => {
                 console.log(err);
                 //set invalid message
-                setError(err.message);
+                setError(error.response.data);
             });
     }
 
