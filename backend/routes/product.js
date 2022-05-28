@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../Models/ProductModel");
 const Order = require("../Models/OrderModel");
+const Favorite = require("../Models/FavoriteModel");
+const kafka = require("../kafka/client");
 
 
 //create product
@@ -32,7 +34,6 @@ router.post("/create", async (req, res) => {
         console.log("ERROR CREATING PRODUCT");
         res.status(500).json(err);
     }
-
 
 
 });
@@ -90,38 +91,57 @@ router.get("/find/:id", async (req, res) => {
 router.get("/productList", async (req, res) => {
     console.log("INSIDE PRODUCT GET AlL");
 
-    const query = req.query.new;
-    const categories = req.query.category;
-    const productName = req.query.title;
-    try {
-        let products;
+    console.log(req.query);
 
-        if (query) {
-            products = await Product.find().sort({createdAt: -1}).limit(10);
-        } else if (categories) {
-            products = await Product.find({
-                categories: {
-                    $in: [categories], //list products with specific category
-                },
+    kafka.make_request('get_product', req.query, function (err, results) {
+        console.log('in result');
+        console.log(results);
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            })
+        } else {
+            console.log("Inside else");
+            res.json({
+                updatedList: results
             });
-        }
-        else if (productName) {
-            products = await Product.find({
-                title: {
-                    $in: [productName],
-                },
-            });
-        }
-        else {
-            products = await Product.find();
+
+            res.end();
         }
 
-        console.log("SUCCESS PRODUCT GET");
-        res.status(200).json(products);
-    } catch (err) {
-        console.log("ERROR PRODUCT GET");
-        res.status(500).json(err);
-    }
+    });
+    // const query = req.query.new;
+    // const categories = req.query.category;
+    // const productName = req.query.title;
+    // try {
+    //     let products;
+    //
+    //     if (query) {
+    //         products = await Product.find().sort({createdAt: -1}).limit(10);
+    //     } else if (categories) {
+    //         products = await Product.find({
+    //             categories: {
+    //                 $in: [categories], //list products with specific category
+    //             },
+    //         });
+    //     } else if (productName) {
+    //         products = await Product.find({
+    //             title: {
+    //                 $regex: productName,
+    //             },
+    //         });
+    //     } else {
+    //         products = await Product.find();
+    //     }
+    //
+    //     console.log("SUCCESS PRODUCT GET");
+    //     res.status(200).json(products);
+    // } catch (err) {
+    //     console.log("ERROR PRODUCT GET");
+    //     res.status(500).json(err);
+    // }
 });
 
 //GET seller products
@@ -141,25 +161,68 @@ router.get("/seller", async (req, res) => {
 
 //favorite
 router.post("/favorites/:id", async (req, res) => {
+
+
     console.log("INSIDE PRODUCT FAVORITE POST");
+    kafka.make_request('post_favorite', req.body, function (err, results) {
+        console.log('in result');
+        console.log(results);
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            })
+        } else {
+            console.log("Inside else");
+            res.json({
+                updatedList: results
+            });
+
+            res.end();
+        }
+
+    });
+
+    // try {
+    //     const addFavorite = await Product.findByIdAndUpdate(
+    //         req.params.id,
+    //         {
+    //             $push: {favorites: req.body.username},
+    //         },
+    //         {new: true}
+    //     );
+    //
+    //     // const product = await Product.findById(req.params.id);
+    //     // product.insert(req.body);
+    //
+    //     console.log("SUCCESS ADDED FAVORITE PRODUCT")
+    //     res.status(200).json(addFavorite);
+    // } catch (err) {
+    //     console.log("ERROR FAVORITE PRODUCT");
+    //     res.status(500).json(err);
+    // }
+});
+
+
+//GET favorite product
+router.get("/favorite", async (req, res) => {
+    console.log("INSIDE FAVORITE PRODUCT GET");
+    const userId = req.query.userId;
+    console.log(userId);
+
+    const favorite = await Favorite.find({userId: req.query.userId});
+    console.log("FAVORITES")
+    console.log(favorite);
 
 
     try {
-        const addFavorite = await Product.findByIdAndUpdate(
-            req.params.id,
-            {
-                $push: {favorites: req.body.username} ,
-            },
-            {new: true}
-        );
+        const product =await Favorite.find({userId: req.query.userId});
+        res.status(200).json(product);
+        console.log("SUCCESS FAVORITE PRODUCT GET")
 
-        // const product = await Product.findById(req.params.id);
-        // product.insert(req.body);
-
-        console.log("SUCCESS ADDED FAVORITE PRODUCT")
-        res.status(200).json(addFavorite);
     } catch (err) {
-        console.log("ERROR FAVORITE PRODUCT");
+        console.log("ERROR FAVORITE PRODUCT GET")
         res.status(500).json(err);
     }
 });
