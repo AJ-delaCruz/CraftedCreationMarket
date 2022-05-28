@@ -2,9 +2,13 @@ import React from 'react';
 import Footer from "../Footer/Footer";
 import Navbar from "../LandingPage/Navbar";
 import {Button} from "react-bootstrap";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import axios from "axios";
+import {useState} from "react";
+import Checkbox from '@mui/material/Checkbox';
+import {addProduct, clearCart, updateProduct} from "../../modernRedux/cartRedux";
+import {Navigate} from "react-router";
 
 
 const Checkout = () => {
@@ -12,6 +16,9 @@ const Checkout = () => {
     const userId = localStorage.getItem("user_id");
     console.log(order.products[0]);
     console.log(userId);
+    const [note, setNote] = useState("");
+    const [quantity, setQuantity] = useState(1);
+    const dispatch = useDispatch();
 
     //button to order
     const submitOrder = () => {
@@ -28,9 +35,42 @@ const Checkout = () => {
                 });
         });
         console.log("Submit order");
+
+        dispatch(
+            clearCart(order)
+        );
+
+        window.location.href = "/purchases";
+
+
     };
 
+    const handleQuantity = (type, item) => {
+        console.log(item.title);
+        console.log(order.products.title);
+        // console.log("TITLE "+item.title);
 
+        order.products.map((x) => {
+            if (item.title === x.title)
+
+                // if (type === "decrease") {
+                //     order.products.quantity > 0 &&  order.products(order.quantity - 1);
+                // } else {
+                //     order.products.quantity(order.products.quantity + 1);
+                // }
+                if (type === "decrease") {
+                    quantity > 0 && setQuantity(quantity - 1);
+                } else {
+                    setQuantity(quantity + 1);
+                }
+            dispatch(
+                updateProduct({item, quantity})
+            );
+            order.products.remove(x.length - 1);
+        });
+        console.log(order)
+        console.log(item)
+    };
     return (
 
         <div style={{marginBottom: "100px"}}>
@@ -84,13 +124,14 @@ const Checkout = () => {
                          }}
                     >
                         {order.products.map((item) => (
-                            <div className="product" style={{
+                            <div className="product" key={item._id} style={{
                                 display: "flex",
                                 // flex:"2"
                                 // textAlign: "center",
                                 justifyContent: "space-between",
                                 // flexDirection:"column",
                                 // padding: "20px"
+
                             }}>
 
 
@@ -103,14 +144,15 @@ const Checkout = () => {
                                     flex: "2"
                                 }}>
 
-                                    <img style={{width: "300px"}} src={item.img}/>
+                                    <img style={{height: "200px", width: "200px"}} src={item.img}/>
                                     <div className="productDescription" style={{
                                         display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
+                                        // alignItems: "center",
+                                        // justifyContent: "center",
                                         flexDirection: "column",
                                         // padding: "20px"
-                                        flex: "1"
+                                        flex: "1",
+                                        margin: "50px"
                                     }}>
                                         <div className="productName">
                                             <b>Product:</b> {item.title}
@@ -126,7 +168,21 @@ const Checkout = () => {
                                             <b>Description:</b> {item.description}
 
                                         </div>
+                                        <div style={{
+                                            marginLeft: "-10px"
+                                        }}>
+                                            <Checkbox/>
 
+                                            <span type="checkbox">This order is a gift</span>
+                                            <form style={{
+                                                marginLeft: "10px"
+                                            }}>
+                                                <textarea placeholder="add a note" onChange={(e) => {
+                                                    setNote(e.target.value);
+                                                }}/>
+                                            </form>
+
+                                        </div>
                                     </div>
 
                                     {/*productDescription*/}
@@ -149,9 +205,11 @@ const Checkout = () => {
                                              marginBottom: "20px"
                                              // justifyContent: "space-between"
                                          }}>
-                                        <Button>-</Button>
-                                        <span style={{margin: "10px"}}>{item.quantity}</span>
-                                        <Button>+</Button>
+                                        <Button onClick={() => handleQuantity("decrease", item)}>-</Button>
+                                        <span style={{margin: "10px"}}>{quantity}</span>
+                                        <Button onClick={() => handleQuantity("increase", item)}>+</Button>
+
+
                                     </div>
 
                                     <div className="price"
@@ -161,6 +219,7 @@ const Checkout = () => {
 
                                 </div>
                                 {/*priceDetails*/}
+
 
                             </div>
 
