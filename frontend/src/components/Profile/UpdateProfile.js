@@ -2,6 +2,8 @@ import React from 'react';
 import Navbar from "../LandingPage/Navbar";
 import {NavLink} from "react-router-dom";
 import {useState} from "react";
+import axios from "axios";
+import {useEffect} from "react";
 // import Footer from "../Footer/Footer";
 
 const UpdateProfile = () => {
@@ -16,39 +18,46 @@ const UpdateProfile = () => {
     const [birthDay, setbirthDay] = useState("");
 
 
-    // const [fileData, setFileData] = useState(null);
+    const [image, setImage] = useState(null);
+    const [error, setError] = useState("");
 
-    const [imageSelected, setImageSelected] = useState(null);
-    // const [singleUpload] = useSingleUploadMutation();
-// console.log(imageSelected);
 
     const userId = localStorage.getItem("user_id");
-    // console.log(userIds)
 
-    // const [editProfile, {loading}] = useMutation(EDIT_PROFILE);
 
-    const updateProfile = () => {
-        // editProfile({
-        //     variables: {
-        //         userId: userId,
-        //         name: name,
-        //         img: imageSelected,
-        //         street: street,
-        //         state: state,
-        //         city: city,
-        //         country: country,
-        //         zipCode: zipCode,
-        //         email: email,
-        //         phoneNum: phoneNum,
-        //         birthDay: birthDay
-        //     },
-        //     update: (_, {data}) => {
-        //         // history.push(`/profileUpdate`);
-        //         console.log("updating profile")
-        //         console.log(data);
-        //     },
-        // });
+    const updateProfile = (e) => {
+        e.preventDefault();
+        axios.defaults.withCredentials = true;
+        const data = {"userId": userId, name, image,street, state, city, country, zipCode, email,phoneNum, birthDay};
+        console.log(data);
+        axios.put("http://localhost:3001/user/update",  data)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch(error => {
+                console.log(error);
+                //set invalid message
+                setError(error.response.data);
+
+            });
+        console.log("Submit order");
     };
+
+    const [user, setUser] = useState("");
+
+    useEffect(() => {
+        const findUser = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3001/user/find?userId=${userId}`);
+                setUser(res.data);
+                console.log(res.data);
+
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        findUser();
+    }, [userId]);
     return (
         <div>
             {<Navbar/>}
@@ -96,7 +105,7 @@ const UpdateProfile = () => {
                                 Profile Picture
                                 <input
                                     onChange={(e) => {
-                                        setImageSelected(e.target.files[0])
+                                        setImage(e.target.files[0])
                                     }}
                                     // setFileData(e.target.files[0]);
                                     type="file"
@@ -137,8 +146,10 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="name"
-                                    placeholder="Name"
-                                    // required
+                                    placeholder={user.name ? user.name : "Name"}
+                                    onChange={(e) => {
+                                        setName(e.target.value);
+                                    }}
                                 />
                             </div>
 
@@ -148,7 +159,10 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="address1"
-                                    placeholder="Street"
+                                    placeholder={user.street ? user.street : "Street"}
+                                    onChange={(e) => {
+                                        setStreet(e.target.value);
+                                    }}
                                 />
                             </div>
                             <div className="form-group">
@@ -156,7 +170,7 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="city"
-                                    placeholder="City"
+                                    placeholder={user.city ? user.city : "City"}
                                     onChange={(e) => {
                                         setCity(e.target.value);
                                     }}
@@ -167,16 +181,21 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="state"
-                                    placeholder="State"
+                                    placeholder={user.state ? user.state : "State"}
+                                    onChange={(e) => {
+                                        setState(e.target.value);
+                                    }}
                                 />
                             </div>
                             <div className="form-group">
-                                <select name="birth-month">
-                                    <option value="">- Country -</option>
-                                    <option value="1"
+                                <select name="birth-month" onChange={(e) => {
+                                    setCountry(e.target.value);
+                                }}>
+                                    <option value="">- {user.country ? user.country : "Country"} -</option>
+                                    <option value="USA"
                                     >USA
                                     </option>
-                                    <option value="2"
+                                    <option value="UK"
                                     >UK
                                     </option>
                                 </select>
@@ -186,7 +205,10 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="zipCode"
-                                    placeholder="Zip Code"
+                                    placeholder={user.zipCode ? user.zipCode : "Zip Code"}
+                                    onChange={(e) => {
+                                        setZipCode(e.target.value);
+                                    }}
                                 />
                             </div>
 
@@ -196,7 +218,10 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="email"
-                                    placeholder="Email"
+                                    placeholder={user.email ? user.email : "Email"}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                    }}
                                 />
                             </div>
                             <div className="form-group">
@@ -204,7 +229,10 @@ const UpdateProfile = () => {
                                     type="text"
                                     className="form-control"
                                     name="phoneNumber"
-                                    placeholder="Phone number"
+                                    placeholder={user.phoneNum ? user.phoneNum : "Phone number"}
+                                    onChange={(e) => {
+                                        setPhoneNum(e.target.value);
+                                    }}
                                 />
                             </div>
 
@@ -212,8 +240,10 @@ const UpdateProfile = () => {
                                 <div>
                                     <label>Birthday</label>
                                 </div>
-                                <select name="birth-month">
-                                    <option value="">- month -</option>
+                                <select name="birth-month"  onChange={(e) => {
+                                    setbirthDay(e.target.value);
+                                }}>
+                                    <option value="">- {user.birthDay ? user.birthDay: "month"} -</option>
                                     <option value="1"
                                     >January
                                     </option>
@@ -250,9 +280,48 @@ const UpdateProfile = () => {
                                     <option value="12"
                                     >December
                                     </option>
+
+                                    {/*<option value="January"*/}
+                                    {/*>January*/}
+                                    {/*</option>*/}
+                                    {/*<option value="February"*/}
+                                    {/*>February*/}
+                                    {/*</option>*/}
+                                    {/*<option value="March"*/}
+                                    {/*>March*/}
+                                    {/*</option>*/}
+                                    {/*<option value="April"*/}
+                                    {/*>April*/}
+                                    {/*</option>*/}
+                                    {/*<option value="May"*/}
+                                    {/*>May*/}
+                                    {/*</option>*/}
+                                    {/*<option value="June"*/}
+                                    {/*>June*/}
+                                    {/*</option>*/}
+                                    {/*<option value="July"*/}
+                                    {/*>July*/}
+                                    {/*</option>*/}
+                                    {/*<option value="August"*/}
+                                    {/*>August*/}
+                                    {/*</option>*/}
+                                    {/*<option value="September"*/}
+                                    {/*>September*/}
+                                    {/*</option>*/}
+                                    {/*<option value="October"*/}
+                                    {/*>October*/}
+                                    {/*</option>*/}
+                                    {/*<option value="November"*/}
+                                    {/*>November*/}
+                                    {/*</option>*/}
+                                    {/*<option value="December"*/}
+                                    {/*>December*/}
+                                    {/*</option>*/}
                                 </select>
-                                <select id="birth-day" name="birth-day" aria-label='Day'>*/}
-                                    <option value="">- day -</option>
+                                <select name="birth-day " onChange={(e) => {
+                                    setbirthDay(e.target.value.substring(2,3));
+                                }}>
+                                    <option value="">- {user.birthDay ? user.birthDay.substring(2,3) : "day"}  -</option>
                                     <option value="1"
                                     >1
                                     </option>
