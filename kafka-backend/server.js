@@ -2,6 +2,22 @@ const connection = new require('./kafka/Connection');
 //topics files
 //var signin = require('./services/signin.js');
 const Books = require('./services/books.js');
+const Orders = require('./services/order.js');
+
+//connect to mongoDB
+const { mongoDB } = require('./Utils/config'); //dotenv.config();
+const mongoose = require('mongoose');
+mongoose.connect(mongoDB ,(err, res) => { //mongoose.connect(process.env.MONGO_URL) for better security
+    if (err) {
+        console.log(err);
+        console.log(`MongoDB Connection Failed`);
+    } else {
+        console.log(`MongoDB Connected`);
+    }
+});
+
+
+
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -37,3 +53,5 @@ function handleTopicRequest(topic_name,fname){
 //first argument is topic name
 //second argument is a function that will handle this topic request
 handleTopicRequest("post_book",Books) //sample demo
+handleTopicRequest("post_order",Orders) //sample demo
+
