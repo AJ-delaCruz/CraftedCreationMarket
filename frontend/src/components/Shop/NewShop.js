@@ -34,7 +34,7 @@ const NewShop = () => {
     useEffect(() => {
         const findUserShop = async () => {
             try {
-                const res = await axios.get(`http://localhost:3001/user/find/shop?userId=${userId}`);
+                const res = await axios.get(`http://localhost:3001/user/find?userId=${userId}`);
                 setHasShop(res.data.shopName);
                 console.log(res.data.shopName);
 

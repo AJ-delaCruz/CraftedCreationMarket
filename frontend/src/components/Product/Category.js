@@ -50,7 +50,6 @@ class Category extends Component {
 
 
             <div className="container">
-                <h2>Category</h2>
                 <div style={{
                     display: "flex",
                     padding: "20px",

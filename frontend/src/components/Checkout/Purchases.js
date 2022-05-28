@@ -9,8 +9,8 @@ const Purchases = () => {
 
     const userId = localStorage.getItem("user_id");
     const [orders, setOrders] = useState([]);
-    // console.log(orders);
-
+    console.log(orders);
+console.log(orders[1]._id);
 
     useEffect(() => {
         const getOrders = async () => {
@@ -32,7 +32,7 @@ const Purchases = () => {
         <div>
             <Navbar/>
             <div style={{padding: "300px", marginTop: "-250px"}}>
-                <h3>Order ID: {orders._id}</h3>
+                {/*<h3>Order ID: {orders[0]._id}</h3>*/}
 
                 <table className="table">
                     <thead>

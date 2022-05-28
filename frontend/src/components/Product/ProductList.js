@@ -61,8 +61,7 @@ const ProductList = () => {
 
         <div>
 
-            <div>Hello</div>
-            <Title>{cat}</Title>
+            <Title >{cat}</Title>
             <FilterContainer>
                 <Filter>
                     <FilterText>Filter Products:</FilterText>
@@ -104,19 +103,9 @@ const ProductList = () => {
             {/*{(typeof searchProduct === 'string') ? <Products categories={cat} filters={filters} sort={sort} searchValue={searchProduct}/> :*/}
             {/*    <Products categories={cat} filters={filters} sort={sort} />*/}
             <Products categories={cat} filters={filters} sort={sort} searchValue={searchProduct}/>
-            }
+
         </div>
     );
 };
 
 export default ProductList;
-
-
-// import Products from "./Products";
-//
-// const ProductList= () => {
-//     return (
-//         <Products/>
-//     );
-// };
-// export default ProductList;

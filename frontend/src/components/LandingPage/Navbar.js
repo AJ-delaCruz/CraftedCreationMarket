@@ -39,7 +39,8 @@ const Navbar = () => {
     })
 
     //redux
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.preventDefault();
         // console.log(search);
         dispatch(
             searchProduct(search)

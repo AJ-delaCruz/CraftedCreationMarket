@@ -6,7 +6,7 @@ import Navbar from './LandingPage/Navbar';
 import Checkout from './Checkout/Checkout';
 import Profile from './Profile/Profile';
 import Signup from "./Signup/Signup";
-import Favorites from "./Favorites/Favorites";
+import Favorite from "./Favorites/Favorite";
 import Category from "./Product/Category";
 import ProductList from "./Product/ProductList";
 import Seller from "./Shop/Seller";
@@ -16,9 +16,10 @@ import Child from "./Test/Child";
 import Parent from "./Test/Parent";
 import NewShop from "./Shop/NewShop";
 import UpdateShop from "./Shop/UpdateShop";
-import Cart from "./Checkout/Cart";
 import EditShopProduct from "./Shop/EditShopProduct";
 import EditShopOwner from "./Shop/EditShopOwner";
+import ProductOverview from "./Product/ProductOverview";
+import Purchases from "./Checkout/Purchases";
 //Create a Main Component
 class Main extends Component {
     render(){
@@ -28,23 +29,27 @@ class Main extends Component {
 
                <Routes>
                    <Route path="/" element={<Navbar/>}/>
+                   <Route path="/home" element={<Home/>}/>
                    <Route path="/login" element={<Login/>}/>
-                   <Route path="/home/" element={<Home/>}/>
                    <Route path="/checkout" element={<Checkout/>}/>
+                   <Route path="/purchases" element={<Purchases/>}/>
+
                    <Route path="/profile" element={<Profile/>}/>
                    <Route path="/profileUpdate" element={<UpdateProfile/>}/>
                    <Route path="/signup" element={<Signup/>}/>
-                   <Route path="/favorites" element={<Favorites/>}/>
+                   <Route path="/favorites" element={<Favorite/>}/>
                    <Route path="/category" element={<Category/>}/>
-                   <Route path="/productlist" element={<ProductList/>}/>
+                   <Route path="/productlist/:id" element={<ProductList/>}/>
                    <Route path="/seller" element={<Seller/>}/>
                    <Route path="/shop" element={<ShopHomePage/>}/>
                    <Route path="/newShop" element={<NewShop/>}/>
                    <Route path="/updateShop" element={<UpdateShop/>}/>
                    <Route path="/editShopProduct" element={<EditShopProduct/>}/>
                    <Route path="/editShop" element={<EditShopOwner/>}/>
-                   <Route path="/cart" element={<Cart/>}/>
+                   <Route path="/productOverview/:id" element={<ProductOverview/>}/>
+
                    <Route path="/test" element={<Parent/>}/>
+
 
                </Routes>
 

@@ -49,11 +49,11 @@ const Products = ({categories, filters, sort, searchValue}) => {
 
     //SORT
     useEffect(() => {
-        // if (sort === "newest") {
-        //     setFilteredProducts((prev) =>
-        //         [...prev].sort((a, b) => a.createdAt - b.createdAt)
-        //     );
-        // } else
+        if (sort === "newest") {
+            setFilteredProducts((prev) =>
+                [...prev].sort((a, b) => a.createdAt - b.createdAt)
+            );
+        } else
         if (sort === "asc") {
             setFilteredProducts((prev) =>
                 [...prev].sort((a, b) => a.price - b.price)
@@ -72,6 +72,7 @@ const Products = ({categories, filters, sort, searchValue}) => {
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "space-between"
+
         }}
         >
             {filteredProducts //return filtered products

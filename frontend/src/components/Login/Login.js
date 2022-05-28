@@ -28,14 +28,14 @@ function Login() {
                 console.log(decoded.username);
 
                 localStorage.setItem("token", token);
-                localStorage.setItem("user_id", decoded.id);
+                localStorage.setItem("user_id", decoded._id);
                 localStorage.setItem("username", decoded.username);
 
             })
             .catch(err => {
                 console.log(err);
                 //set invalid message
-                setError(err.message);
+                setError(error.response.data);
 
             });
 

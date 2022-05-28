@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Navbar from "../LandingPage/Navbar";
 import {Button} from "react-bootstrap";
 import Footer from "../Footer/Footer";
@@ -6,16 +6,8 @@ import axios from "axios";
 import {useLocation} from "react-router";
 import { useDispatch } from "react-redux";
 import { addProduct} from "../../modernRedux/cartRedux";
-// class ProductOverview extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             inStock: false,
-//             productId: "12",
-//         }
-//     }
-//
-//     render() {
+import {Link} from "react-router-dom";
+
 const ProductOverview = () => {
 
     const location = useLocation();
@@ -75,10 +67,12 @@ const ProductOverview = () => {
                     }}>Continue Shopping</Button>
 
 
-                    <Button style={{
-                        fontWeight: "600",
-                        padding: "10px",
-                    }}>Checkout</Button>
+                    <Link to={"/checkout"}>
+                        <Button style={{
+                            fontWeight: "600",
+                            padding: "10px",
+                        }}>Checkout</Button>
+                    </Link>
                 < /div>
 
 
@@ -115,7 +109,7 @@ const ProductOverview = () => {
                              height: "80vh",
                              padding: "50px",
                          }}>
-                        <h5 style={{display: "flex", fontWeight: "150", justifyContent: "left"}}>BOB'S SHOP</h5>
+                        <h5 style={{display: "flex", fontWeight: "150", justifyContent: "left"}}>{product.shopName}</h5>
                         <div className="productDescription" style={{
                             display: "flex",
                             // alignItems: "center",
@@ -128,7 +122,7 @@ const ProductOverview = () => {
                         }}>
 
                             <div>
-                                21 sales
+                                {product.sale > 1 ? product.sale + " sales " : product.sale + " sale "}
                             </div>
 
                         </div>
@@ -153,7 +147,7 @@ const ProductOverview = () => {
 
                             <div className="productDesc" style={{}}>
                                 <b>Description:</b>
-                                {product.desc}
+                                {product.description}
 
                             </div>
 
@@ -188,7 +182,7 @@ const ProductOverview = () => {
                             <h5 style={{
                                 marginLeft: "20px"
                             }}>$ {product.price}</h5>
-                            {product.inStock ? "In Stock" : "Out of Stock"}
+                            {product.quantity > 0 ? "In Stock" : "Out of Stock"}
 
 
                         </div>
@@ -211,17 +205,7 @@ const ProductOverview = () => {
                                 // backgroundColor:"black",
                                 alignItems: "center"
                             }}>
-                            {/*<Button style={{*/}
-                            {/*    width: "50%",*/}
-                            {/*    padding: "10px",*/}
-                            {/*    backgroundColor: "white",*/}
-                            {/*    color: "black",*/}
-                            {/*    margin: "10px",*/}
 
-
-                            {/*}}>*/}
-                            {/*    BUY IT NOW*/}
-                            {/*</Button>*/}
                             <Button onClick={handleClick} style={{
                                 width: "50%",
                                 padding: "10px",
@@ -237,8 +221,8 @@ const ProductOverview = () => {
                 </div>
                 {/*bottom container*/}
 
-            </div>
-            {/*{<Footer/>}*/}
+            </div >
+            {/*{< Footer/>}*/}
         </div>
     )
 }
