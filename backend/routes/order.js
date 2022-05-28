@@ -3,32 +3,54 @@ const express = require("express");
 const router = express.Router();
 const Order = require("../Models/OrderModel");
 const Product = require("../Models/ProductModel");
+const kafka = require("../kafka/client");
 
 
-//create ORDER
+//create ORDER / kafka
 router.post("/create", async (req, res) => {
-    console.log("INSIDE ORDER POST");
-    const orders = req.body.order;
-    console.log(orders);
-    console.log(req.body.userId);
+    kafka.make_request('post_order', req.body, function (err, results) {
+        console.log('in result');
+        console.log(results);
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            })
+        } else {
+            console.log("Inside else");
+            res.json({
+                updatedList: results
+            });
 
-    const newOrder = new Order({
-        userId: req.body.userId,
-        productId: orders._id,
-        title: orders.title,
-        img: orders.img,
-        quantity: orders.quantity,
-        price: orders.price,
+            res.end();
+        }
+
     });
 
-    try {
-        const savedOrder = await newOrder.save();
-        res.status(200).json(savedOrder);
-        console.log("SUCCESS CREATING ORDER");
-    } catch (err) {
-        console.log("ERROR CREATING ORDER");
-        res.status(500).json(err);
-    }
+    // console.log("INSIDE ORDER POST");
+    // const orders = req.body.order;
+    // console.log(orders);
+    // console.log(req.body.userId);
+    //
+    // const newOrder = new Order({
+    //     userId: req.body.userId,
+    //     productId: orders._id,
+    //     title: orders.title,
+    //     img: orders.img,
+    //     quantity: orders.quantity,
+    //     price: orders.price,
+    // });
+    //
+    // try {
+    //     const savedOrder = await newOrder.save();
+    //     res.status(200).json(savedOrder);
+    //     console.log("SUCCESS CREATING ORDER");
+    // } catch (err) {
+    //     console.log("ERROR CREATING ORDER");
+    //     res.status(500).json(err);
+    // }
+
 });
 
 //update order
@@ -90,7 +112,7 @@ router.get("/orderList", async (req, res) => {
     // const check = Order.find({});
     // console.log(check);
     try {
-        const orders = await Order.find({userId:  req.query.userId});
+        const orders = await Order.find({userId: req.query.userId});
 
         console.log("SUCCESS ORDER GET ALL");
         res.status(200).json(orders);
