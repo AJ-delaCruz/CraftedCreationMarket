@@ -11,6 +11,7 @@ const Profile = () => {
     const userId = localStorage.getItem("user_id");
     const [user, setUser] = useState("");
 
+    console.log(user);
     useEffect(() => {
         const findUser = async () => {
             try {
@@ -45,7 +46,11 @@ const Profile = () => {
                         display: 'flex'
                     }}>
                         <img
-                            style={{width: '150px', height: '120px',}}
+                            style={{
+                                width: '150px',
+                                height: '120px',
+                                objectFit: "cover",
+                                borderRadius: "50%"}}
                             alt=""
                             // src={
                             //     this.state.ProfileImg !== null &&
@@ -53,7 +58,11 @@ const Profile = () => {
                             //         ? this.state.ProfileImg
                             //         : "../images/defaultProfilePic.png"
                             // }
-                            src="../image/defaultProfilePic.png"
+                            // src="../image/defaultProfilePic.png"
+                            // src='http://localhost:3001/IMAGE-1653725991836.png'
+                             src={ user.img ? `http://localhost:3001/${user.img}` : "../image/defaultProfilePic.png" }
+
+
                         />
                         <h1 style={{marginLeft: "30px"}}>
                             {/*{this.state.name}*/}

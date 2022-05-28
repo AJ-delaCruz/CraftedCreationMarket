@@ -122,7 +122,11 @@ const UpdateProfile = () => {
 
 
                             <img
-                                style={{width: '150px', height: '120px',}}
+                                style={{
+                                    width: '150px',
+                                    height: '120px',
+                                    objectFit: "cover",
+                                    borderRadius: "50%"}}
                                 alt=""
                                 // src={
                                 //     this.state.ProfileImg !== null &&
@@ -130,7 +134,8 @@ const UpdateProfile = () => {
                                 //         ? this.state.ProfileImg
                                 //         : "../images/defaultProfilePic.png"
                                 // }
-                                src="../image/defaultProfilePic.png"
+                                // src="../image/defaultProfilePic.png"
+                                src='http://localhost:3001/IMAGE-1653725991836.png'
                             />
                         </div>
 
