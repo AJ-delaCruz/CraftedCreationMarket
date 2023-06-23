@@ -31,3 +31,17 @@ yarn-error.log*
 
 
 .env
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+
+### VS Code ###
+.vscode/
+
+
+.env
+.DS_store
