@@ -23,3 +23,10 @@ mongoose.connect(process.env.MONGODB_URL, options)
 // export mongoose instance for shared models
 module.exports = mongoose;
 
+const { kafkaConsumer } = require('./kafka/kafkaConsumer');
+
+// Start Kafka consumer
+kafkaConsumer().catch(error => {
+    console.error('Error starting Kafka consumer:', error);
+});
+
