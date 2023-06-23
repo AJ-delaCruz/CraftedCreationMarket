@@ -12,6 +12,7 @@
   "dependencies": {
     "kafka-node": "^5.0.0",
     "kafkajs": "^2.2.4",
-    "mongoose": "^7.3.1"
+    "mongoose": "^7.3.1",
+    "shared-library": "file:../shared-library"
   }
 }
