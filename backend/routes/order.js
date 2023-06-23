@@ -1,55 +1,60 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const Order = require("../Models/OrderModel");
-const Product = require("../Models/ProductModel");
-const kafka = require("../kafka/client");
+const Product = require('../Models/ProductModel');
 
+
+const { producer } = require('../kafka/kafkaClient');
 
 //create ORDER / kafka
 router.post("/create", async (req, res) => {
-    kafka.make_request('post_order', req.body, function (err, results) {
-        console.log('in result');
-        console.log(results);
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            })
-        } else {
-            console.log("Inside else");
-            res.json({
-                updatedList: results
-            });
-
-            res.end();
-        }
-
-    });
-
-    // console.log("INSIDE ORDER POST");
-    // const orders = req.body.order;
+    console.log("INSIDE ORDER POST");
+    const orders = req.body;
     // console.log(orders);
     // console.log(req.body.userId);
-    //
-    // const newOrder = new Order({
-    //     userId: req.body.userId,
-    //     productId: orders._id,
-    //     title: orders.title,
-    //     img: orders.img,
-    //     quantity: orders.quantity,
-    //     price: orders.price,
-    // });
-    //
-    // try {
-    //     const savedOrder = await newOrder.save();
-    //     res.status(200).json(savedOrder);
-    //     console.log("SUCCESS CREATING ORDER");
-    // } catch (err) {
-    //     console.log("ERROR CREATING ORDER");
-    //     res.status(500).json(err);
-    // }
+    console.log(orders.productId);
+    try {
+
+        //check if product is in stock
+        const inStock = await Product.findById(new mongoose.Types.ObjectId(orders.productId))
+        // console.log(inStock);
+        if (inStock.quantity <= 0) {
+            console.log(orders.title + " out of stock.")
+            return res.status(400).json({ message: "Out of stock" });
+        }
+
+        //create an order
+        const newOrder = new Order({
+            userId: req.body.userId,
+            productId: orders.productId,
+            title: orders.title,
+            img: orders.img,
+            quantity: orders.quantity,
+            price: orders.price,
+        });
+
+        const savedOrder = await newOrder.save();
+
+        //publish to topic order for the order created 
+        console.log('Connecting to producer...');
+        await producer.connect();
+        console.log('Connected to producer.');
+        await producer.send({
+            topic: 'orders',
+            messages: [{ value: JSON.stringify(savedOrder) }],
+        });
+        console.log('Message sent.');
+        await producer.disconnect();
+
+        //return order
+        res.status(200).json(savedOrder);
+        console.log("SUCCESS CREATING ORDER");
+    } catch (err) {
+        console.error("ERROR CREATING ORDER", err);
+        res.status(500).json(err);
+    }
 
 });
 
@@ -63,7 +68,7 @@ router.put("/update/:id", async (req, res) => {
             {
                 $set: req.body,
             },
-            {new: true}
+            { new: true }
         );
         console.log("SUCCESS UPDATING ORDER")
         res.status(200).json(updatedOrder);
@@ -112,7 +117,7 @@ router.get("/orderList", async (req, res) => {
     // const check = Order.find({});
     // console.log(check);
     try {
-        const orders = await Order.find({userId: req.query.userId});
+        const orders = await Order.find({ userId: req.query.userId });
 
         console.log("SUCCESS ORDER GET ALL");
         res.status(200).json(orders);

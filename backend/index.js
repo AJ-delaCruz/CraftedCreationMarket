@@ -4,9 +4,13 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const cors = require('cors'); //use cors to allow cross origin resource sharing
-app.use(cors({origin: 'http://localhost:3000', credentials: true}));
+// app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3002'], credentials: true }));
+app.use(cors({
+    origin: '*',
+    credentials: true
+}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 const db = require("./Utils/config");
 const path = require('path');
@@ -29,7 +33,9 @@ app.use(session({
 
 //Allow Access Control
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -53,35 +59,28 @@ const upload = multer({
 //connect to mongoDB
 const { mongoDB } = require('./Utils/config'); //dotenv.config();
 const mongoose = require('mongoose');
-// const dotenv = require("dotenv")
-// dotenv.config();
+const dotenv = require("dotenv")
+dotenv.config();
 
-// const options = {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     poolSize: 500,
-//     bufferMaxEntries: 0
-// };
+// Reuse connection to db
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 100, // max connections in the pool
+    // maxPoolSize: 100, //default
+};
 
-// mongoose.connect(mongoDB, options, (err, res) => {
-//     if (err) {
-//         console.log(err);
-//         console.log(`MongoDB Connection Failed`);
-//     } else {
-//         console.log(`MongoDB Connected`);
-//     }
-// });
-
-mongoose.connect(mongoDB ,(err, res) => { //mongoose.connect(process.env.MONGO_URL) for better security
-    if (err) {
+mongoose.connect(process.env.MONGODB_URL, options)
+    .then(() => {
+        console.log('MongoDB Connected');
+        // console.log(mongoose.connection);
+    })
+    .catch((err) => {
         console.log(err);
-        console.log(`MongoDB Connection Failed`);
-    } else {
-        console.log(`MongoDB Connected`);
-    }
-});
-
-
+        console.log('MongoDB Connection Failed');
+    });
+// export mongoose instance for shared models
+module.exports = mongoose;
 
 
 
