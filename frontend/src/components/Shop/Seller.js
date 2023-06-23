@@ -4,8 +4,7 @@ import React, {Component} from 'react';
 // import axios from "axios";
 import {Link} from "react-router-dom";
 // import Favorite from "../Favorites/Favorite";
-import {popularProducts} from "../Product/data";
-import {sellerItems} from "./data";
+
 import Product from "../Product/Product";
 import {useState} from "react";
 import {useEffect} from "react";
@@ -59,7 +58,7 @@ const Seller = () => {
                                 </svg>
                             </Link>
                         </h2>
-                    < /div>
+                    </div>
 
 
                     <div style={{display: 'flex', justifyContent: "right"}}>

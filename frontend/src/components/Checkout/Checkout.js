@@ -1,14 +1,14 @@
 import React from 'react';
 import Footer from "../Footer/Footer";
 import Navbar from "../LandingPage/Navbar";
-import {Button} from "react-bootstrap";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import {useState} from "react";
+import { useState } from "react";
 import Checkbox from '@mui/material/Checkbox';
-import {addProduct, clearCart, updateProduct} from "../../modernRedux/cartRedux";
-import {Navigate} from "react-router";
+import { addProduct, clearCart, updateProduct } from "../../modernRedux/cartRedux";
+import { Navigate } from "react-router";
 
 
 const Checkout = () => {
@@ -22,11 +22,11 @@ const Checkout = () => {
 
     //button to order
     const submitOrder = () => {
-        axios.defaults.withCredentials = true;
+        // axios.defaults.withCredentials = true;
 
         order.products.map((newOrder) => {
             console.log(newOrder);
-            axios.post("http://localhost:3001/orders/create", {"userId": userId, order: newOrder})
+            axios.post("http://localhost:3001/orders/create", { "userId": userId, order: newOrder })
                 .then((res) => {
                     console.log(res.data)
                 })
@@ -64,7 +64,7 @@ const Checkout = () => {
                     setQuantity(quantity + 1);
                 }
             dispatch(
-                updateProduct({item, quantity})
+                updateProduct({ item, quantity })
             );
             order.products.remove(x.length - 1);
         });
@@ -73,8 +73,8 @@ const Checkout = () => {
     };
     return (
 
-        <div style={{marginBottom: "100px"}}>
-            {<Navbar/>}
+        <div style={{ marginBottom: "100px" }}>
+            {<Navbar />}
 
             <div
                 style={{
@@ -85,13 +85,13 @@ const Checkout = () => {
 
 
                 <div className="topContainer"
-                     style={{
-                         display: "flex",
-                         textAlign: "center",
-                         justifyContent: "space-between",
-                         // justifyContent: "flex-end",
-                         padding: "20px"
-                     }}>
+                    style={{
+                        display: "flex",
+                        textAlign: "center",
+                        justifyContent: "space-between",
+                        // justifyContent: "flex-end",
+                        padding: "20px"
+                    }}>
 
 
                     <h2 style={{
@@ -108,20 +108,20 @@ const Checkout = () => {
                         }}>Keep Shopping
                         </Button>
                     </Link>
-                < /div>
+                </div>
 
 
                 <div className="bottomContainer"
-                     style={{
-                         display: "flex",
-                         justifyContent: "space-between"
-                     }}>
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between"
+                    }}>
 
                     <div className="productInfo"
-                         style={{
-                             // display: "flex",
-                             flex: 3
-                         }}
+                        style={{
+                            // display: "flex",
+                            flex: 3
+                        }}
                     >
                         {order.products.map((item) => (
                             <div className="product" key={item._id} style={{
@@ -144,7 +144,7 @@ const Checkout = () => {
                                     flex: "2"
                                 }}>
 
-                                    <img style={{height: "200px", width: "200px"}} src={item.img}/>
+                                    <img style={{ height: "200px", width: "200px" }} src={item.img} />
                                     <div className="productDescription" style={{
                                         display: "flex",
                                         // alignItems: "center",
@@ -171,7 +171,7 @@ const Checkout = () => {
                                         <div style={{
                                             marginLeft: "-10px"
                                         }}>
-                                            <Checkbox/>
+                                            <Checkbox />
 
                                             <span type="checkbox">This order is a gift</span>
                                             <form style={{
@@ -179,7 +179,7 @@ const Checkout = () => {
                                             }}>
                                                 <textarea placeholder="add a note" onChange={(e) => {
                                                     setNote(e.target.value);
-                                                }}/>
+                                                }} />
                                             </form>
 
                                         </div>
@@ -199,21 +199,21 @@ const Checkout = () => {
                                     flexDirection: "column"
                                 }}>
                                     <div className="priceContainer"
-                                         style={{
-                                             display: "flex",
-                                             alignItems: "center",
-                                             marginBottom: "20px"
-                                             // justifyContent: "space-between"
-                                         }}>
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            marginBottom: "20px"
+                                            // justifyContent: "space-between"
+                                        }}>
                                         <Button onClick={() => handleQuantity("decrease", item)}>-</Button>
-                                        <span style={{margin: "10px"}}>{quantity}</span>
+                                        <span style={{ margin: "10px" }}>{quantity}</span>
                                         <Button onClick={() => handleQuantity("increase", item)}>+</Button>
 
 
                                     </div>
 
                                     <div className="price"
-                                         style={{fontWeight: "200", fontSize: "35px", marginRight: "20px"}}>
+                                        style={{ fontWeight: "200", fontSize: "35px", marginRight: "20px" }}>
                                         $ {item.price}
                                     </div>
 
@@ -231,27 +231,27 @@ const Checkout = () => {
                     {/*productInfo*/}
 
                     <div className="orderSummary"
-                         style={{
-                             // display: "flex",
-                             // margin:"30px 0px",
-                             // alignItems: "center",
-                             border: "0.5px solid lightgray",
-                             borderRadius: "20px",
-                             // margin: "200px"
-                             // justifyContent: "space-between"
-                             flexDirection: "column",
-                             flex: "1",
-                             // height:"90%"
-                             height: "55vh",
-                             padding: "20px"
-                         }}>
-                        <h1 style={{fontWeight: "150"}}>ORDER SUMMARY</h1>
+                        style={{
+                            // display: "flex",
+                            // margin:"30px 0px",
+                            // alignItems: "center",
+                            border: "0.5px solid lightgray",
+                            borderRadius: "20px",
+                            // margin: "200px"
+                            // justifyContent: "space-between"
+                            flexDirection: "column",
+                            flex: "1",
+                            // height:"90%"
+                            height: "55vh",
+                            padding: "20px"
+                        }}>
+                        <h1 style={{ fontWeight: "150" }}>ORDER SUMMARY</h1>
                         <div className="productSummary"
-                             style={{
-                                 display: "flex",
-                                 justifyContent: "space-between",
-                                 margin: "30px 0px"
-                             }}>
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                margin: "30px 0px"
+                            }}>
 
 
                             <span>Items(s)</span>
@@ -259,13 +259,13 @@ const Checkout = () => {
                         </div>
 
                         <div className="productSummary"
-                             style={{
-                                 display: "flex",
-                                 justifyContent: "space-between",
-                                 margin: "30px 0px"
-                             }}>
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                margin: "30px 0px"
+                            }}>
                             <span>Shipping</span>
-                            <span style={{color: "green"}}> Free </span>
+                            <span style={{ color: "green" }}> Free </span>
                         </div>
 
 
@@ -278,12 +278,12 @@ const Checkout = () => {
                             }}
                         />
                         <div className="productSummary"
-                             style={{
-                                 display: "flex",
-                                 justifyContent: "space-between",
-                                 margin: "30px 0px",
-                                 marginBottom: "30px"
-                             }}>
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                margin: "30px 0px",
+                                marginBottom: "30px"
+                            }}>
 
 
                             <h2>Total {order.quantity > 1 ? "(" + order.quantity + " items)" : "(" + order.quantity + " item)"} </h2>

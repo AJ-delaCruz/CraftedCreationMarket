@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {useState} from "react";
+import React, { useEffect } from 'react';
+import { useState } from "react";
 import Product from "../Product/Product";
 import Navbar from "../LandingPage/Navbar";
 import axios from "axios";
@@ -10,7 +10,7 @@ const Purchases = () => {
     const userId = localStorage.getItem("user_id");
     const [orders, setOrders] = useState([]);
     console.log(orders);
-console.log(orders[1]._id);
+    // console.log(orders[1]._id);
 
     useEffect(() => {
         const getOrders = async () => {
@@ -26,40 +26,44 @@ console.log(orders[1]._id);
             }
         };
         getOrders();
-    },[userId]);
+    }, [userId]);
     return (
 
         <div>
-            <Navbar/>
-            <div style={{padding: "300px", marginTop: "-250px"}}>
+            <Navbar />
+            <div style={{ padding: "300px", marginTop: "-250px" }}>
                 {/*<h3>Order ID: {orders[0]._id}</h3>*/}
 
                 <table className="table">
                     <thead>
-                    <tr>
-                        <th></th>
-                        {/*<th>ID</th>*/}
-                        <th>DATE</th>
-                        <th>NAME</th>
-                        <th>PRICE</th>
-                        <th>QUANTITY</th>
+                        <tr>
+                            <th>ORDER ID</th>
+                            <th></th>
+                            {/*<th>ID</th>*/}
+                            <th>DATE</th>
+                            <th>NAME</th>
+                            <th>PRICE</th>
+                            <th>QUANTITY</th>
+                            <th>NOTE</th>
 
 
-                    </tr>
+                        </tr>
                     </thead>
                     <tbody>
-                    {orders.map((order) => (
-                        <tr key={order._id}>
-                            <img style={{
-                                width: "200p", height: "200px"
-                            }} src={order.img}/>
-                            {/*<td>{order.id}</td>*/}
-                            <td>{Date(order.createdAt).substring(0, 15)}</td>
-                            <td>{order.title}</td>
-                            <td>$ {order.price.toFixed(2)}</td>
-                            <td>{order.quantity}</td>
-                        </tr>
-                    ))}
+                        {orders.map((order) => (
+                            <tr key={order._id}>
+                                <td>{order._id}</td>
+                                <img style={{
+                                    width: "40%", height: "200px"
+                                }} src={order.img} />
+                                {/*<td>{order.id}</td>*/}
+                                <td>{Date(order.createdAt).substring(0, 15)}</td>
+                                <td>{order.title}</td>
+                                <td>$ {order.price.toFixed(2)}</td>
+                                <td>{order.quantity}</td>
+                                <td>{order.note}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

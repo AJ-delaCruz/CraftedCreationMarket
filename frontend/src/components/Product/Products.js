@@ -1,12 +1,12 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {popularProducts} from "./data";
+import { popularProducts } from "./data";
 import Product from "./Product";
 import axios from "axios";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 
-const Products = ({categories, filters, sort, searchValue}) => {
+const Products = ({ categories, filters, sort, searchValue }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -54,15 +54,15 @@ const Products = ({categories, filters, sort, searchValue}) => {
                 [...prev].sort((a, b) => a.createdAt - b.createdAt)
             );
         } else
-        if (sort === "asc") {
-            setFilteredProducts((prev) =>
-                [...prev].sort((a, b) => a.price - b.price)
-            );
-        } else {
-            setFilteredProducts((prev) =>
-                [...prev].sort((a, b) => b.price - a.price)
-            );
-        }
+            if (sort === "asc") {
+                setFilteredProducts((prev) =>
+                    [...prev].sort((a, b) => a.price - b.price)
+                );
+            } else {
+                setFilteredProducts((prev) =>
+                    [...prev].sort((a, b) => b.price - a.price)
+                );
+            }
     }, [sort]);
 
     return (
@@ -76,9 +76,9 @@ const Products = ({categories, filters, sort, searchValue}) => {
         }}
         >
             {filteredProducts //return filtered products
-                ? filteredProducts.map((item) => <Product item={item} key={item.id}/>)
+                ? filteredProducts.map((item) => <Product item={item} key={item._id} />)
                 //else return all products
-                : products.map((item) => <Product item={item} key={item.id}/>)}
+                : products.map((item) => <Product item={item} key={item.id} />)}
 
 
             {/*{filteredProducts.map((item) => <Product item={item} key={item.id}/>)}*/}
