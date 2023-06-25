@@ -25,8 +25,9 @@ module.exports = mongoose;
 
 const { kafkaConsumer } = require('./kafka/kafkaConsumer');
 
-// Start Kafka consumer
-kafkaConsumer().catch(error => {
-    console.error('Error starting Kafka consumer:', error);
-});
-
+//Start 30 Kafka consumers by invoking kafkaConsumer 
+for (let i = 1; i <= 30; i++) {
+    kafkaConsumer(i).catch(error => {
+        console.error('Error starting Kafka consumer:', error);
+    });
+}
