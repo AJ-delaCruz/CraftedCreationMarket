@@ -10,11 +10,11 @@ const { producer } = require('../kafka/kafkaClient');
 
 //create ORDER / kafka
 router.post("/create", async (req, res) => {
-    console.log("INSIDE ORDER POST");
+    // console.log("INSIDE ORDER POST");
     const orders = req.body;
     // console.log(orders);
     // console.log(req.body.userId);
-    console.log(orders.productId);
+    // console.log(orders.productId);
     try {
 
         //check if product is in stock
@@ -38,25 +38,67 @@ router.post("/create", async (req, res) => {
         const savedOrder = await newOrder.save();
 
         //publish to topic order for the order created 
-        console.log('Connecting to producer...');
-        await producer.connect();
-        console.log('Connected to producer.');
         await producer.send({
             topic: 'orders',
             messages: [{ value: JSON.stringify(savedOrder) }],
         });
-        console.log('Message sent.');
-        await producer.disconnect();
+
 
         //return order
         res.status(200).json(savedOrder);
-        console.log("SUCCESS CREATING ORDER");
+        // console.log("SUCCESS CREATING ORDER");
     } catch (err) {
-        console.error("ERROR CREATING ORDER", err);
+        // console.error("ERROR CREATING ORDER", err);
         res.status(500).json(err);
     }
 
 });
+
+
+// test without kafka
+// router.post("/create", async (req, res) => {
+//     // console.log("INSIDE ORDER POST");
+//     const orders = req.body;
+//     // console.log(orders.productId);
+//     try {
+
+//         //check if product is in stock
+//         const inStock = await Product.findById(new mongoose.Types.ObjectId(orders.productId))
+//         if (inStock.quantity <= 0) {
+//             console.log(orders.title + " out of stock.")
+//             return res.status(400).json({ message: "Out of stock" });
+//         }
+
+//         //create an order
+//         const newOrder = new Order({
+//             userId: req.body.userId,
+//             productId: orders.productId,
+//             title: orders.title,
+//             img: orders.img,
+//             quantity: orders.quantity,
+//             price: orders.price,
+//         });
+
+//         const savedOrder = await newOrder.save();
+
+//         //update product quantity and sales
+//         // console.log('Updating product quantity...');
+//         const product = await Product.findById(savedOrder.productId);
+//         product.quantity -= savedOrder.quantity;
+//         product.sale += savedOrder.quantity;
+//         await product.save();
+//         // console.log('Product quantity updated.');
+
+//         //return order
+//         res.status(200).json(savedOrder);
+//         // console.log("SUCCESS CREATING ORDER");
+//     } catch (err) {
+//         console.error("ERROR CREATING ORDER", err);
+//         res.status(500).json(err);
+//     }
+
+// });
+
 
 //update order
 router.put("/update/:id", async (req, res) => {

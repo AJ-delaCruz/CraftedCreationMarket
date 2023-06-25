@@ -82,7 +82,18 @@ mongoose.connect(process.env.MONGODB_URL, options)
 // export mongoose instance for shared models
 module.exports = mongoose;
 
+const { producer } = require('./kafka/kafkaClient');
 
+producer.connect()
+    .then(() => console.log('Connected to Kafka producer.'))
+    .catch(err => console.error('Error connecting to producer:', err));
+
+// Disconnect producer when the application shuts down
+process.once('SIGINT', async () => {
+    await producer.disconnect();
+    console.log('Producer disconnected.');
+    process.exit(0);
+});
 
 const userRoute = require("./routes/user");
 const shopRoute = require("./routes/shop");
