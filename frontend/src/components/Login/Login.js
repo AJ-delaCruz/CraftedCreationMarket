@@ -1,41 +1,48 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import jwt_decode from 'jwt-decode';
 import styled from "styled-components";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
+    const navigate = useNavigate();
 
     //button to login
     const submitLogin = () => {
-        const data = {username, password}
+        const data = { username, password }
+        // console.log(data);
+
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
         axios.post('http://localhost:3001/user/login', data)
             .then(res => {
-                console.log(data);
+                // console.log(res.data);
                 //auth
-                const token = res.data;
-                const decoded = jwt_decode(token.split(' ')[1]);
-                console.log("decoded " + decoded);
-                console.log(decoded);
-                console.log(decoded._id);
-                console.log(decoded.username);
+                const { token } = res.data;
+                const decoded = jwt_decode(token);
+                // console.log("decoded " + decoded);
+                // console.log(decoded);
+                // console.log("userId: " + decoded._id);
+                // console.log("username:" + decoded.username);
 
                 localStorage.setItem("token", token);
                 localStorage.setItem("user_id", decoded._id);
                 localStorage.setItem("username", decoded.username);
 
+                //navigate to homepage
+                navigate('/');
+
             })
-            .catch(err => {
-                console.log(err);
+            .catch(error => {
+                console.log(error);
                 //set invalid message
-                setError(error.response.data);
+                setError(error.response.data.message);
 
             });
 
@@ -49,11 +56,11 @@ function Login() {
                 <Form>
                     <Input placeholder="username" type="text" onChange={(e) => {
                         setUsername(e.target.value);
-                    }}/>
+                    }} />
 
                     <Input placeholder="password" type="password" onChange={(e) => {
                         setPassword(e.target.value);
-                    }}/>
+                    }} />
 
                     <Button style={{
                         width: "50%",
@@ -64,7 +71,7 @@ function Login() {
                         cursor: "pointer",
                         margin: "10px",
                     }}
-                            onClick={submitLogin}>
+                        onClick={submitLogin}>
                         Log In
                     </Button>
                 </Form>

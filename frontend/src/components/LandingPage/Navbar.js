@@ -95,8 +95,8 @@ const Navbar = () => {
                 <Link to={`/home`} style={{ textDecoration: "none" }}>
                     {/*      onClick={() => setSearch("lol") && handleClick}*/}
                     {/*>*/}
-                    <h2 style={{ color: "#fa8072", paddingLeft: "50px" }} className="title">
-                        Etsy
+                    <h2 style={{ color: "#8a2be2", paddingLeft: "50px" }} className="title">
+                        CraftedCreationMarket
                     </h2>
                 </Link>
                 <div style={{ display: 'flex' }}>
@@ -131,7 +131,7 @@ const Navbar = () => {
                 </div>
                 <ul className="nav nav-pills">
                     <li className="nav-item ">
-                        <NavLink className="btn btn-light btn-outline-secondary" to="/home">
+                        <NavLink className="btn btn-light btn-outline-secondary" to="/">
                             Home
                         </NavLink>
                     </li>

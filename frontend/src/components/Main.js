@@ -26,8 +26,8 @@ class Main extends Component {
                 {/*Render Different Component based on Route*/}
 
                 <Routes>
-                    {/* <Route path="/" element={<Navbar />} /> */}
-                    <Route path="/home" element={<Home />} />
+                    {/* <Route path="/" element={<Home />} /> */}
+                    <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/purchases" element={<Purchases />} />

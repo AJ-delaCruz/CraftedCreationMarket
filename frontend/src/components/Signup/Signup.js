@@ -1,26 +1,30 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import {Navigate} from "react-router";
-import {useHistory, Redirect} from "react-router-dom";
-import {Button} from "@mui/material";
+import { Navigate } from "react-router";
+import { useHistory, Redirect } from "react-router-dom";
+import { Button } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
 
-    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     //button to signuo
     const submitSignup = () => {
-        const data = {"name":name, "username": username, "password":password}
+        const data = { "email": email, "username": username, "password": password }
         //set the with credentials to true
         // axios.defaults.withCredentials = true;
         //make a post request with the user data
         axios.post('http://localhost:3001/user/signup', data)
             .then(res => {
                 console.log(res.data);
+                // Navigate to login page after registration
+                navigate('/login');
             })
             .catch(err => {
                 console.log(err);
@@ -42,18 +46,18 @@ function Signup() {
                 <Title>CREATE AN ACCOUNT</Title>
                 <Form>
 
-                    <Input placeholder="Name" onChange={(e) => {
-                        setName(e.target.value);
-                    }}/>
+                    <Input placeholder="Email" onChange={(e) => {
+                        setEmail(e.target.value);
+                    }} />
 
-
-                    <Input placeholder="username" onChange={(e) => {
+                    <Input placeholder="Username" onChange={(e) => {
                         setUsername(e.target.value);
-                    }}/>
+                    }} />
 
-                    <Input placeholder="password" type="password" onChange={(e) => {
+
+                    <Input placeholder="Password" type="password" onChange={(e) => {
                         setPassword(e.target.value);
-                    }}/>
+                    }} />
 
                     <Button style={{
                         width: "50%",
@@ -64,7 +68,7 @@ function Signup() {
                         cursor: "pointer",
                         margin: "10px",
                     }}
-                            onClick={submitSignup}>
+                        onClick={submitSignup}>
                         Register
                     </Button>
                 </Form>
