@@ -3,21 +3,18 @@ const app = express(); // create an express app
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const cors = require('cors'); //use cors to allow cross origin resource sharing
-// app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3002'], credentials: true }));
-app.use(cors({
-    origin: '*',
-    credentials: true
-}));
+// const cors = require('cors'); //use cors to allow cross origin resource sharing
+// app.use(cors({ // using res.setHeader for this project
+//     origin: '*',
+//     // credentials: true
+// }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 const db = require("./Utils/config");
 const path = require('path');
-//set the view engine to ejs
-app.set('view engine', 'ejs');
-//set the directory of views
-app.set('views', './views');
+
 //specify the path of static directory
 // app.use(express.static(__dirname + '/public/images'));
 app.use('/static', express.static(path.join(__dirname + 'images')));
@@ -31,11 +28,10 @@ app.use(session({
     activeDuration: 5 * 60 * 1000
 }));
 
-//Allow Access Control
+// //Allow Access Control, enable CORS
 app.use(function (req, res, next) {
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    // res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
