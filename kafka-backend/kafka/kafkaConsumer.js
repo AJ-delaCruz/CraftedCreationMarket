@@ -1,5 +1,6 @@
 const { Kafka } = require('kafkajs');
 const { updateProductQuantity } = require('../services/product.js');
+const { notifyUser, notifySeller } = require('../services/notification.js')
 
 const host = process.env.KAFKA_HOST_IP || 'localhost';
 
@@ -25,7 +26,7 @@ const kafkaConsumer = async (consumerId) => {
 
     // handles messages one at a time
     eachMessage: async ({ topic, partition, message }) => {
-      // console.log(`Consumer ${consumerId} processing message from partition ${partition}`);
+      console.log(`Consumer ${consumerId} processing message from partition ${partition}`);
 
       const value = JSON.parse(message.value.toString()); // convert JSON string to JS object
       try {
@@ -36,6 +37,10 @@ const kafkaConsumer = async (consumerId) => {
 
             //handle updates for the product quantity and sales
             await updateProductQuantity(order);
+            // send user email order confirmation
+            await notifyUser(order);
+            // send seller email notification
+            await notifySeller(order);
 
             break;
           }
