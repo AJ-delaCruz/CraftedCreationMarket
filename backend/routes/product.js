@@ -1,11 +1,9 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const Product = require("../Models/ProductModel");
 const Order = require("../Models/OrderModel");
 const Favorite = require("../Models/FavoriteModel");
-const kafka = require("../kafka/client");
-
+const Product = require('../Models/ProductModel');
 
 //create product
 router.post("/create", async (req, res) => {
@@ -48,7 +46,7 @@ router.put("/update/:id", async (req, res) => {
             {
                 $set: req.body,
             },
-            {new: true}
+            { new: true }
         );
         console.log("SUCCESS UPDATING PRODUCT")
         res.status(200).json(updatedProduct);
@@ -92,56 +90,36 @@ router.get("/productList", async (req, res) => {
     console.log("INSIDE PRODUCT GET AlL");
 
     console.log(req.query);
+    const query = req.query.new;
+    const categories = req.query.category;
+    const productName = req.query.title;
+    try {
+        let products;
 
-    kafka.make_request('get_product', req.query, function (err, results) {
-        console.log('in result');
-        console.log(results);
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            })
-        } else {
-            console.log("Inside else");
-            res.json({
-                updatedList: results
+        if (query) {
+            products = await Product.find().sort({ createdAt: -1 }).limit(10);
+        } else if (categories) {
+            products = await Product.find({
+                categories: {
+                    $in: [categories], //list products with specific category
+                },
             });
-
-            res.end();
+        } else if (productName) {
+            products = await Product.find({
+                title: {
+                    $regex: productName,
+                },
+            });
+        } else {
+            products = await Product.find();
         }
 
-    });
-    // const query = req.query.new;
-    // const categories = req.query.category;
-    // const productName = req.query.title;
-    // try {
-    //     let products;
-    //
-    //     if (query) {
-    //         products = await Product.find().sort({createdAt: -1}).limit(10);
-    //     } else if (categories) {
-    //         products = await Product.find({
-    //             categories: {
-    //                 $in: [categories], //list products with specific category
-    //             },
-    //         });
-    //     } else if (productName) {
-    //         products = await Product.find({
-    //             title: {
-    //                 $regex: productName,
-    //             },
-    //         });
-    //     } else {
-    //         products = await Product.find();
-    //     }
-    //
-    //     console.log("SUCCESS PRODUCT GET");
-    //     res.status(200).json(products);
-    // } catch (err) {
-    //     console.log("ERROR PRODUCT GET");
-    //     res.status(500).json(err);
-    // }
+        console.log("SUCCESS PRODUCT GET");
+        res.status(200).json(products);
+    } catch (err) {
+        console.error("ERROR PRODUCT GET", err);
+        res.status(500).json(err);
+    }
 });
 
 //GET seller products
@@ -149,7 +127,7 @@ router.get("/seller", async (req, res) => {
     console.log("INSIDE PRODUCT FIND");
     const sellerId = req.query.sellerId;
     try {
-        const product = await Product.find({sellerId: sellerId});
+        const product = await Product.find({ sellerId: sellerId });
         res.status(200).json(product);
         console.log("SUCCESS SELLER PRODUCT FIND")
 
@@ -211,13 +189,13 @@ router.get("/favorite", async (req, res) => {
     const userId = req.query.userId;
     console.log(userId);
 
-    const favorite = await Favorite.find({userId: req.query.userId});
+    const favorite = await Favorite.find({ userId: req.query.userId });
     console.log("FAVORITES")
     console.log(favorite);
 
 
     try {
-        const product =await Favorite.find({userId: req.query.userId});
+        const product = await Favorite.find({ userId: req.query.userId });
         res.status(200).json(product);
         console.log("SUCCESS FAVORITE PRODUCT GET")
 
