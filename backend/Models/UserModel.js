@@ -14,7 +14,6 @@ const usersSchema = new Schema({
     city: { type: String, default: null },
     country: { type: String, default: null },
     zipCode: { type: Number, default: null },
-    email: { type: String, default: null },
     phoneNum: { type: Number, default: null },
     birthDay: { type: Date, default: null },
     shopName: { type: String, default: null },
