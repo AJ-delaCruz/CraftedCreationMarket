@@ -1,7 +1,7 @@
 const initProductModel = (mongoose) => {
     const ProductSchema = new mongoose.Schema(
         {
-            sellerId: { type: String, required: true },
+            sellerId: { type: mongoose.Schema.Types.ObjectId, required: true },
             // shopName: { type: String, required: true },
             title: { type: String, required: true, },
             description: { type: String },

@@ -2,16 +2,16 @@ const mongoose = require("mongoose");
 
 const FavoriteSchema = new mongoose.Schema(
     {
-        userId: {type: String, required: true},
-        productId: {type: String, required: true},
-        title: {type: String, required: true,},
-        description: {type: String},
-        img: {type: String},
-        categories: {type: Array},
-        quantity: {type: Number, required: true},
-        price: {type: Number, required: true},
+        userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        productId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        title: { type: String, required: true, },
+        description: { type: String },
+        img: { type: String },
+        categories: { type: Array },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
     },
-    {timestamps: true}
+    { timestamps: true }
 );
 
 
