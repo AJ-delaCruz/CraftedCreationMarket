@@ -1,18 +1,21 @@
 # CraftedCreationMarket
-CraftedCreationMarket is an Etsy inspired web application. This project is designed to replicate the main functionalities of Etsy, providing a marketplace for users to buy and sell unique items across a range of categories.
+CraftedCreationMarket is an Etsy-inspired web application. This project is designed to replicate the main functionalities of Etsy, providing a marketplace for users to buy and sell unique items across a range of categories.
 
 ## Features
 - **Signup/Login**: Users can sign up and make an account.
 - **Profile**: Users can update their information on the profile page.
 - **Shop**: Sellers can create a shop, edit their shop, and list their products.
-- **Dashboard**: Users can explore or search for products with different categories that have been posted by other users.
-- **Product Overview**: Shows the the product description, and options to add to favorite or add to cart.
-- **Favorites**: Users can save their favorite products for future purchase.
-- **Shopping Cart**: List all the products added to cart and the total cost before purchase.
+- **Dashboard**: Users can explore or search for products with different categories that other users have posted.
+- **Product Overview**: Shows the product description, and options to add to favorite or add to cart.
+- **Favorites**: Users can save their favorite products for future purchases.
+- **Shopping Cart**: List all the products added to the cart and the total cost before purchase.
 - **Order History**: Lists all the purchases made by the user.
 - **Email notification**:
     - Buyers receive an email confirmation after placing an order.
     - Sellers receive an email notification when their product is bought.
+
+## System Architecture
+![System Architecture](https://github.com/AJ-delaCruz/CraftedCreationMarket/assets/54551895/7d87ccee-7e23-4b3e-8279-80b712baf384)
 
 
 ## How to run 
@@ -20,19 +23,19 @@ CraftedCreationMarket is an Etsy inspired web application. This project is desig
  ```shell
 git clone https://github.com/AJ-delaCruz/CraftedCreationMarket
  ```
-2. Install dependencies for the backend, kafka-backend, and react-client:
+2. Install dependencies for the backend, Kafka-backend, and react-client:
 ```shell
 cd backend && npm install
 cd kafka-backend && npm install
 cd frontend && npm install
 ```
 3. Setup the environment variables:
-- Create a `.env` file in both backend & kafka-backend directory. Add with values:
+- Create an `.env` file in both the backend & kafka-backend directories. Add with values:
 - `MONGODB_URL`= ...
 -  Add in kafka-backend .env file
     - `EMAIL`= ...
      - `EMAIL_PW`= ...
-4. Start Kafka ZooKeeper and Kafka broker in seperate terminals:
+4. Start Kafka ZooKeeper and Kafka broker in separate terminals:
 - Follow the instructions [here](https://kafka.apache.org/quickstart) to download Kafka
 ```shell
 zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
@@ -54,7 +57,7 @@ cd frontend && npm start
 - JWT
 - Passport
 - Redux
-- **Kafkajs**: Handles order processing in the application when users place orders. It's responsible for real-time updates of product quantities and sales information, and also sends email notifications to both buyers and sellers. Kafka improved the application's response time by 53% and the throughput by 103.7% when compared to using REST APIs alone.
+- **Kafkajs**: Handles order processing in the application when users place orders. It's responsible for real-time updates of product quantities, sales information, and also sends email notifications to both buyers and sellers. Kafka improved the application's response time by 53% and the throughput by 103.7% when compared to using REST APIs alone.
 - **Nodemailer**: Used for sending email notifications after a purchase.
 - **AWS EC2**: Used for cloud hosting
 - **JMeter**: Load and stress testing to optimize performance.
